@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\build\SURAKSHA_API.props" />
+</Project>
