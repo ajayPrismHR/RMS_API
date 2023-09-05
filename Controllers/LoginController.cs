@@ -38,16 +38,15 @@ namespace SURAKSHA.Controllers
             UserViewModel userViewModels = new UserViewModel();
            
             userViewModels = modelLoginRepository.ValidateUser(modelUser);
-            if (!string.IsNullOrEmpty(userViewModels.Emp_Name))
+            if (!string.IsNullOrEmpty(userViewModels.RegistrationID))
             {
                 double expiryMins= string.IsNullOrEmpty(_configuration["Jwt:TokenValidityInMinutes"]) ? 5 : Convert.ToDouble(_configuration["Jwt:TokenValidityInMinutes"]);
                 var claims = new[] {
                         new Claim(JwtRegisteredClaimNames.Sub, _configuration["Jwt:Subject"]),
                         new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                         new Claim(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString()),
-                        new Claim("ID", userViewModels.ID.ToString()),
-                        new Claim("USER_NAME", userViewModels.Emp_Name),
-                        new Claim("NAME", userViewModels.NAME),
+                        new Claim("ID", userViewModels.RegistrationID.ToString()),
+                        new Claim("FIRSTNAME", userViewModels.FirstName)
                     };
 
 

@@ -12,22 +12,14 @@ namespace SURAKSHA.Models.ViewModel
 {
   public class UserViewModel
   {
-    public long EmpID { get; set; }
-
-    public string Emp_Name { get; set; }
-
-    public string NAME { get; set; }
-
-    public long ROLE_ID { get; set; }
-
-    public string ROLE_NAME { get; set; }
-
-    public bool Remember_Me { get; set; }
-
-    public long ID { get; set; }
-
-    public long OFFICE_ID { get; set; }
-
-    public string AccessToken { get; set; }
+        public string RegistrationID { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string MobileNo { get; set; }
+        public string MailID { get; set; } 
+        public string Lat { get; set; }
+        public string Long { get; set; } 
+        public string Image { get; set; }
+        public string AccessToken { get; set; }
   }
 }
