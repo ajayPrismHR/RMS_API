@@ -21,14 +21,16 @@ namespace SURAKSHA.Controllers
         private readonly ILoggerFactory _loggerFactory;
         IConfiguration _configuration;
 
-
+        #region Constructor
         public LoginController(ILogger<LoginController> logger, ILoggerFactory loggerFactory, IConfiguration configuration)
         {
             _logger = logger;
             _loggerFactory = loggerFactory;
             _configuration = configuration;
         }
+        #endregion
 
+        #region Login 
         [HttpPost]
         [Route("DoLogin")]
         public IActionResult DoLogin(UserRequestQueryModel modelUser)
@@ -68,8 +70,24 @@ namespace SURAKSHA.Controllers
                 return NotFound(-1);
             }
         }
+        #endregion
 
-      
+        #region UserRegistration 
+        [HttpPost]
+        [Route("UserRegistration")]
+        public async Task<IActionResult> UserRegistration(UserRegistration User)
+        {
+            LoginController loginController = this;
+            ReturnStatusModel returnStatus = new ReturnStatusModel();
+            LoginRepository loginRepository = new LoginRepository(loginController._loggerFactory.CreateLogger<LoginRepository>());
+            string str = await loginRepository.UserRegistration(User);
+            returnStatus.response = 1;
+            returnStatus.status = str;
+
+            return Ok(returnStatus);
+        }
+        #endregion
+
         [HttpPost]
         [Route("ChangePassword")]
         public async Task<IActionResult> ChangePassword(UserRequestQueryModel User)
@@ -95,20 +113,6 @@ namespace SURAKSHA.Controllers
             
         }
 
-        [HttpPost]
-        [Route("SignUP")]
-        public async Task<IActionResult> SignUP(EmpSignUP User)
-        {
-            LoginController loginController = this;
-            ReturnStatusModel returnStatus = new ReturnStatusModel();
-            LoginRepository loginRepository = new LoginRepository(loginController._loggerFactory.CreateLogger<LoginRepository>());
-            UserViewAPIModel userViewApiModel = new UserViewAPIModel();
-            string str = await loginRepository.SignUP(User);
-            returnStatus.response = 1;
-            returnStatus.status = str;
-
-            return Ok(returnStatus);
-        }
 
     }
 }

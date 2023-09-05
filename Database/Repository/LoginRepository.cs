@@ -12,6 +12,9 @@ using Serilog;
 using Microsoft.Extensions.Logging;
 using SURAKSHA.Filters;
 using System.Data.Common;
+using System.Net;
+using System.Runtime.InteropServices;
+using System;
 
 namespace SURAKSHA.Database.Repository
 {
@@ -100,47 +103,54 @@ namespace SURAKSHA.Database.Repository
 
             return retStatus;
         }
-        public async Task<string> SignUP(EmpSignUP User)
+        public Task<string> UserRegistration(UserRegistration User)
         {
-            string retStatus = "";
+            string retStatus = string.Empty;
             string str = Utility.EncryptText(User.Password);
-            SqlParameter parmretStatus = new SqlParameter();
-            parmretStatus.ParameterName = "@RetStatus";
-            parmretStatus.DbType = DbType.Int32;
-            parmretStatus.Size = 8;
-            parmretStatus.Direction = ParameterDirection.Output;
+            SqlParameter outRetStatus = new SqlParameter();
+            outRetStatus.ParameterName = "@Ret_Status";
+            outRetStatus.DbType = DbType.Int32;
+            outRetStatus.Size = 8;
+            outRetStatus.Direction = ParameterDirection.Output;
+
+            SqlParameter outRetMessage = new SqlParameter();
+            outRetMessage.ParameterName = "@Ret_Message";
+            outRetMessage.DbType = DbType.String;
+            outRetMessage.Size = 1000;
+            outRetMessage.Direction = ParameterDirection.Output;
+
             SqlParameter[] param ={
-                new SqlParameter("@UserName",  User.UserName),
-                new SqlParameter("@PASSWORD",  str),
-                new SqlParameter("@FirstName",  User.FirstName),
-                new SqlParameter("@LastName",  User.LastName),
-                new SqlParameter("@Address1",  User.Address1),
-                new SqlParameter("@Address2",  User.Address2),
-                new SqlParameter("@Address3",  User.Address3),
-                new SqlParameter("@LandMark",  User.LandMark),
-                new SqlParameter("@City",  User.City),
-                new SqlParameter("@State",  User.State),
-                new SqlParameter("@Pincode",  User.Pincode),
-                new SqlParameter("@Mobile_No",  User.Mobile_No),
-                new SqlParameter("@Email",  User.Email),
-                new SqlParameter("@Photo",  User.Photo),
-                parmretStatus,
-                
-            };
+            new SqlParameter("@RegistrationID",  User.RegistrationID),
+            new SqlParameter("@FirstName",  User.FirstName),
+            new SqlParameter("@LastName",  User.LastName),
+            new SqlParameter("@MobileNo",  User.MobileNo),
+            new SqlParameter("@MailID",  User.MailID),
+            new SqlParameter("@Address",  User.Address),
+            new SqlParameter("@Area_Code",  User.Area_Code),
+            new SqlParameter("@UserType",  User.UserType),
+            new SqlParameter("@Image",  User.Image),
+            new SqlParameter("@Password",  User.Password),
+            new SqlParameter("@Lat",  User.Lat),
+            new SqlParameter("@Long",  User.Long),
+            new SqlParameter("@Updatedby",User.Updatedby),
+            new SqlParameter("@UpdateOn",User.UpdateOn),
+            new SqlParameter("@RegisteredBy",User.RegisteredBy), 
+            new SqlParameter("@RegisteredOn",User.RegisteredOn),
+            outRetStatus , outRetMessage};
+
+
             try
             {
-                SqlHelper.ExecuteNonQuery(conn, CommandType.StoredProcedure, "SIGNUP", param);
+                SqlHelper.ExecuteNonQuery(conn, CommandType.StoredProcedure, "User_Registration", param);
 
-                if (param[13].Value != DBNull.Value)// status
-                    retStatus = Convert.ToString(param[15].Value);
-                else
-                    retStatus = "";
+                if (param[16].Value != DBNull.Value)// status
+                    retStatus = Convert.ToString(param[16].Value );
             }
             catch (Exception ex)
             {
                 retStatus = "Exception";
             }
-            return retStatus;
+            return Task.FromResult<string>(retStatus);
         }
 
 

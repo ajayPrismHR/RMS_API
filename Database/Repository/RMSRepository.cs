@@ -7,7 +7,6 @@ using System.Data;
 using System.Data.Common;
 using System.Data.SqlClient;
 using System.Net;
-using SURAKSHA_API.Models.QueryModel;
 
 namespace SURAKSHA_API.Database.Repository
 {
@@ -21,9 +20,7 @@ namespace SURAKSHA_API.Database.Repository
             _logger = logger;
         }
 
-        public RMSRepository()
-        {
-        }
+
        
     }
 }

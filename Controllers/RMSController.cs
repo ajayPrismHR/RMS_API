@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Mail;
 using System.Net;
-using SURAKSHA_API.Models.QueryModel;
 using SURAKSHA.Models.QueryModel;
 using SURAKSHA_API.Database.Repository;
 using System.Data;
