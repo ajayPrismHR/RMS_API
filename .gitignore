@@ -6,3 +6,4 @@
 /.gitignore
 /.vs/RMS_API/FileContentIndex/0533fa44-6252-48aa-95c8-9e65eab51a8a.vsidx
 /.gitignore
+*.vsidx
