@@ -9,6 +9,8 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Net;
 using System.Security.Claims;
 using System.Text;
+using RMS_API.Models.ViewModel;
+
 namespace SURAKSHA.Controllers
 {
    
@@ -67,6 +69,48 @@ namespace SURAKSHA.Controllers
             {
                 _logger.LogInformation("Invalid credentials");
                 
+                return NotFound(-1);
+            }
+        }
+        #endregion
+
+        #region Login 
+        [HttpPost]
+        [Route("RestaurantLogin")]
+        public IActionResult RestaurantLogin(UserRequestQueryModel modelUser)
+        {
+            ILogger<LoginRepository> modelLogger = _loggerFactory.CreateLogger<LoginRepository>();
+            LoginRepository modelLoginRepository = new LoginRepository(modelLogger);
+            RestaurantViewModel restaurantViewModels = new RestaurantViewModel();
+
+            restaurantViewModels = modelLoginRepository.ValidateRestaurant(modelUser);
+            if (!string.IsNullOrEmpty(restaurantViewModels.RegistrationID))
+            {
+                double expiryMins = string.IsNullOrEmpty(_configuration["Jwt:TokenValidityInMinutes"]) ? 5 : Convert.ToDouble(_configuration["Jwt:TokenValidityInMinutes"]);
+                var claims = new[] {
+                        new Claim(JwtRegisteredClaimNames.Sub, _configuration["Jwt:Subject"]),
+                        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                        new Claim(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString()),
+                        new Claim("ID", restaurantViewModels.RegistrationID.ToString()),
+                        new Claim("RestaurentName", restaurantViewModels.RestaurentName)
+                    };
+
+
+                var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
+                var signIn = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+                var token = new JwtSecurityToken(
+                    _configuration["Jwt:Issuer"],
+                _configuration["Jwt:Audience"],
+                claims, expires: DateTime.UtcNow.AddMinutes(expiryMins), signingCredentials: signIn);
+
+                restaurantViewModels.AccessToken = new JwtSecurityTokenHandler().WriteToken(token);
+                _logger.LogInformation("Login success");
+                return Ok(restaurantViewModels);
+            }
+            else
+            {
+                _logger.LogInformation("Invalid credentials");
+
                 return NotFound(-1);
             }
         }
