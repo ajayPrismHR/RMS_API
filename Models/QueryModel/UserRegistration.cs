@@ -6,14 +6,28 @@
 
 
 #nullable enable
+using Microsoft.AspNetCore.Mvc;
+using RMS_API.Models.QueryModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Net;
 
 namespace SURAKSHA.Models.QueryModel
 {
-  public class UserRegistration
+  public class MasterUserRegistration
   {
+        [NotNull]
+        public string Userinfo { get; set; } = string.Empty;
 
-        public string RegistrationID { get; set; }
+        //[NotNull]
+        //public ModelFile file { get; set; }
+
+        [NotNull]
+        public IFormFile ImageFile { get; set; }
+
+    }
+public class UserRegistration
+    {
+        public string registrationID { get; set; }
         public string Password { get; set; }
 
         public string FirstName { get; set; }
@@ -32,16 +46,6 @@ namespace SURAKSHA.Models.QueryModel
         public DateTime RegisteredOn { get; set; }
         public int Ret_Status { get; set; }
         public string Ret_Message { get; set; }
-
-
-
-
-
-
-
-
-
-
-
     }
+
 }

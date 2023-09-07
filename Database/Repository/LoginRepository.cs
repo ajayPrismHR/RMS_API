@@ -124,10 +124,10 @@ namespace SURAKSHA.Database.Repository
 
             return retStatus;
         }
-        public Task<string> UserRegistration(UserRegistration User)
+        public Task<RMS_API.Models.Response> UserRegistration(UserRegistration User)
         {
-            string retStatus = string.Empty;
-            string str = Utility.EncryptText(User.Password);
+            RMS_API.Models.Response response; 
+            
             SqlParameter outRetStatus = new SqlParameter();
             outRetStatus.ParameterName = "@Ret_Status";
             outRetStatus.DbType = DbType.Int32;
@@ -141,7 +141,7 @@ namespace SURAKSHA.Database.Repository
             outRetMessage.Direction = ParameterDirection.Output;
 
             SqlParameter[] param ={
-            new SqlParameter("@RegistrationID",  User.RegistrationID),
+            new SqlParameter("@RegistrationID",  User.registrationID),
             new SqlParameter("@FirstName",  User.FirstName),
             new SqlParameter("@LastName",  User.LastName),
             new SqlParameter("@MobileNo",  User.MobileNo),
@@ -150,7 +150,7 @@ namespace SURAKSHA.Database.Repository
             new SqlParameter("@Area_Code",  User.Area_Code),
             new SqlParameter("@UserType",  User.UserType),
             new SqlParameter("@Image",  User.Image),
-            new SqlParameter("@Password",  User.Password),
+            new SqlParameter("@Password",   Utility.EncryptText(User.Password)),
             new SqlParameter("@Lat",  User.Lat),
             new SqlParameter("@Long",  User.Long),
             new SqlParameter("@Updatedby",User.Updatedby),
@@ -163,20 +163,21 @@ namespace SURAKSHA.Database.Repository
             try
             {
                 SqlHelper.ExecuteNonQuery(conn, CommandType.StoredProcedure, "User_Registration", param);
-
+                response = new RMS_API.Models.Response();
                 if (param[16].Value != DBNull.Value)// status
-                    retStatus = Convert.ToString(param[16].Value );
+                    response.Status = Convert.ToInt16(param[16].Value );
+                if (param[17].Value != DBNull.Value)// status
+                    response.message = Convert.ToString(param[17].Value);
+
             }
             catch (Exception ex)
             {
-                retStatus = "Exception";
+                response = new RMS_API.Models.Response();
+                response.Status = -1;
+                response.message = "Internal Server Error";
             }
-            return Task.FromResult<string>(retStatus);
+            return Task.FromResult<RMS_API.Models.Response>(response);
         }
 
-
     }
-
-
-
 }

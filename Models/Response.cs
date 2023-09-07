@@ -6,12 +6,12 @@
 
 
 #nullable enable
-namespace SURAKSHA.Models
+namespace RMS_API.Models
 {
   public class Response
   {
-    public int Status { get; set; }
+    public int Status { get; set; }     
 
-    public string Message { get; set; }
+    public string message { get; set; } = string.Empty;
   }
 }
