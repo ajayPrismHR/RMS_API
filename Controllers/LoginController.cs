@@ -9,6 +9,10 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Net;
 using System.Security.Claims;
 using System.Text;
+using RMS_API.Models.QueryModel;
+using System.Text.Json.Nodes;
+using System.Text.Json;
+
 namespace SURAKSHA.Controllers
 {
    
@@ -19,14 +23,17 @@ namespace SURAKSHA.Controllers
       
         private readonly ILogger _logger;
         private readonly ILoggerFactory _loggerFactory;
+        private readonly IFileService _fileService;
+        private string fileNametoSave { get; set; } = string.Empty;
         IConfiguration _configuration;
 
         #region Constructor
-        public LoginController(ILogger<LoginController> logger, ILoggerFactory loggerFactory, IConfiguration configuration)
+        public LoginController(ILogger<LoginController> logger, ILoggerFactory loggerFactory, IConfiguration configuration,IFileService fileService)
         {
             _logger = logger;
             _loggerFactory = loggerFactory;
             _configuration = configuration;
+            _fileService = fileService;
         }
         #endregion
 
@@ -35,6 +42,7 @@ namespace SURAKSHA.Controllers
         [Route("DoLogin")]
         public IActionResult DoLogin(UserRequestQueryModel modelUser)
         {
+            _logger.LogInformation("Start : DoLogin");
             ILogger<LoginRepository> modelLogger = _loggerFactory.CreateLogger<LoginRepository>();
             LoginRepository modelLoginRepository = new LoginRepository(modelLogger);
             UserViewModel userViewModels = new UserViewModel();
@@ -61,32 +69,57 @@ namespace SURAKSHA.Controllers
 
                 userViewModels.AccessToken = new JwtSecurityTokenHandler().WriteToken(token);
                 _logger.LogInformation("Login success");
+                _logger.LogInformation("Exit : DoLogin");
                 return Ok(userViewModels);
             }
             else
             {
                 _logger.LogInformation("Invalid credentials");
-                
+                _logger.LogInformation("Exit : DoLogin");
+
                 return NotFound(-1);
             }
+           
         }
         #endregion
 
         #region UserRegistration 
         [HttpPost]
         [Route("UserRegistration")]
-        public async Task<IActionResult> UserRegistration(UserRegistration User)
-        {
-            LoginController loginController = this;
-            ReturnStatusModel returnStatus = new ReturnStatusModel();
-            LoginRepository loginRepository = new LoginRepository(loginController._loggerFactory.CreateLogger<LoginRepository>());
-            string str = await loginRepository.UserRegistration(User);
-            returnStatus.response = 1;
-            returnStatus.status = str;
 
-            return Ok(returnStatus);
+        public async Task<IActionResult> UserRegistration([FromForm] MasterUserRegistration user)
+        {
+            _logger.LogInformation("Start : UserRegistration");
+            LoginController loginController = this;
+            var json = user.Userinfo;
+
+            var userObj = JsonSerializer.Deserialize<UserRegistration>(json, new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            });
+
+          
+
+            ModelFile file = new ModelFile();
+            file.ImageFile = user.ImageFile;
+            string filename = file.ImageFile.FileName;
+            FileInfo fi = new FileInfo(filename);
+            string fileNametoSave = userObj.registrationID + "_" + Guid.NewGuid() + fi.Extension;
+            userObj.Image = fileNametoSave;
+
+            LoginRepository loginRepository = new LoginRepository(loginController._loggerFactory.CreateLogger<LoginRepository>());
+            RMS_API.Models.Response response = await loginRepository.UserRegistration(userObj);
+            if (response.Status > 0)
+            {
+                await _fileService.Upload(
+                                            file , fileNametoSave
+                                         );
+            }
+            _logger.LogInformation("Exit : UserRegistration");
+            return Ok(response);
+
         }
-        #endregion
+      #endregion
 
         [HttpPost]
         [Route("ChangePassword")]
@@ -112,7 +145,18 @@ namespace SURAKSHA.Controllers
             }
             
         }
+         
+        [HttpPost]
+        [Route("UploadImage")]
+
+        public async Task<IActionResult> uploadImage([FromForm] ModelFile file)
+        {
+            Random random = new Random();
+            await _fileService.Upload(file,random.Next().ToString());
+            return Ok("success");
+        }
 
 
     }
 }
+
