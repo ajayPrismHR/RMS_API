@@ -15,8 +15,6 @@ using System.Data.Common;
 using System.Net;
 using System.Runtime.InteropServices;
 using System;
-using Azure;
-using System.Reflection.Metadata.Ecma335;
 using RMS_API.Models.ViewModel;
 
 namespace SURAKSHA.Database.Repository
@@ -43,6 +41,26 @@ namespace SURAKSHA.Database.Repository
                 SqlParameter[] param ={new SqlParameter("@Username",user.LoginId.Trim()),new SqlParameter("@Password",Utility.EncryptText(user.Password.Trim()) )};
                 DataSet dataSet = SqlHelper.ExecuteDataset(conn, CommandType.StoredProcedure, "Validate_User_API_LOGIN", param);
                 userViewModel = AppSettingsHelper.ToListof<UserViewModel>(dataSet.Tables[0]);
+                userViewModelReturn = userViewModel[0];
+                _logger.LogInformation(conn);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+
+            }
+            return userViewModelReturn;
+        }
+
+        public RestaurantViewModel ValidateRestaurant(UserRequestQueryModel user)
+        {
+            List<RestaurantViewModel> userViewModel = new List<RestaurantViewModel>();
+            RestaurantViewModel userViewModelReturn = new RestaurantViewModel();
+            try
+            {
+                SqlParameter[] param = { new SqlParameter("@Username", user.LoginId.Trim()), new SqlParameter("@Password", Utility.EncryptText(user.Password.Trim())) };
+                DataSet dataSet = SqlHelper.ExecuteDataset(conn, CommandType.StoredProcedure, "Validate_Restaurant_API_LOGIN", param);
+                userViewModel = AppSettingsHelper.ToListof<RestaurantViewModel>(dataSet.Tables[0]);
                 userViewModelReturn = userViewModel[0];
                 _logger.LogInformation(conn);
             }
