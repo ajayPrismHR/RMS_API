@@ -5,7 +5,7 @@ namespace SURAKSHA
 {
     public static class AppSettingsHelper
     {
-        private static IConfiguration _configuration;
+        private static IConfiguration? _configuration;
         public static void AppSettingsConfigure(IConfiguration configuration)
         {
             _configuration = configuration;

@@ -2,14 +2,14 @@
 {
     public class RestaurantViewModel
     {
-        public string RegistrationID { get; set; }
-        public string RestaurentName { get; set; }
-        public string MobileNo { get; set; }
-        public string MailID { get; set; }
-        public string Address { get; set; }
-        public string Lat { get; set; }
-        public string Long { get; set; }
-        public string Image { get; set; }
-        public string AccessToken { get; set; }
+        public string RegistrationID { get; set; } = string.Empty;
+        public string RestaurentName { get; set; } = string.Empty;
+        public string MobileNo { get; set; } = string.Empty;
+        public string MailID { get; set; } = string.Empty;
+        public string Address { get; set; } = string.Empty;
+        public string Lat { get; set; } = string.Empty;
+        public string Long { get; set; } = string.Empty;
+        public string Image { get; set; } = string.Empty;
+        public string AccessToken { get; set; } = string.Empty;
     }
 }
