@@ -1,7 +1,0 @@
-[2023-09-08 00:25:46.465 +05:30  INF]  Start : UserRegistration
-[2023-09-08 00:26:30.334 +05:30  INF]  Exit : UserRegistration
-[2023-09-08 00:58:57.201 +05:30  INF]  Start : ProductList
-[2023-09-08 01:00:31.824 +05:30  INF]  Start : ProductList
-[2023-09-08 01:00:45.145 +05:30  INF]  Exit : UserRegistration
-[2023-09-08 01:06:04.241 +05:30  INF]  Start : RestaurantList
-[2023-09-08 01:06:04.829 +05:30  INF]  Exit : RestaurantList

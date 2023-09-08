@@ -1,6 +1,0 @@
-[2023-06-28 09:20:18.572 +05:30  INF]  Data Source=10.1.80.230;Initial Catalog=HRMS;Trusted_Connection=False;uid=crmuser;password=Admin@1234;
-[2023-06-28 09:20:21.008 +05:30  INF]  Invalid credentials
-[2023-06-28 09:20:33.893 +05:30  INF]  Data Source=10.1.80.230;Initial Catalog=HRMS;Trusted_Connection=False;uid=crmuser;password=Admin@1234;
-[2023-06-28 09:20:33.896 +05:30  INF]  Invalid credentials
-[2023-06-28 09:21:35.372 +05:30  INF]  Data Source=10.1.80.230;Initial Catalog=HRMS;Trusted_Connection=False;uid=crmuser;password=Admin@1234;
-[2023-06-28 09:21:40.061 +05:30  INF]  Login success
