@@ -64,6 +64,36 @@ namespace SURAKSHA.Controllers
 
         }
         #endregion
+
+        #region Check Mobile No 
+        [HttpPost]
+        [Route("CheckMobileNo")]
+
+        public async Task<IActionResult> CheckMobileNo(MobileNoCheck mobileno)
+        {
+            _logger.LogInformation("Start : Check Mobile No.");
+            RMSController rmsController = this;
+            RMSRepository rMSRepository = new RMSRepository(rmsController._loggerFactory.CreateLogger<RMSRepository>());
+            ReturnStatusModel returnStatus = new ReturnStatusModel();
+            int retStatus = 0;
+            retStatus = await rMSRepository.CheckMobileNoAPI(mobileno);
+            _logger.LogInformation("Exit : Check Mobile No.");
+            if (retStatus == 1)
+            {
+                returnStatus.response = 1;
+                returnStatus.status = "Mobile No. Exists";
+                return Ok(returnStatus);
+            }
+
+            else
+            {
+                returnStatus.response = 0;
+                returnStatus.status = "Mobile No. Does Not Exists";
+                return Ok(returnStatus);
+            }
+
+        }
+        #endregion
     }
 
 }
