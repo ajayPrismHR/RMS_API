@@ -53,12 +53,12 @@ namespace SURAKSHA.Controllers
         [HttpPost]
         [Route("RestaurantList")]
 
-        public async Task<IActionResult> RestaurantList()
+        public async Task<IActionResult> RestaurantList(RestaurantListModel resList)
         {
             _logger.LogInformation("Start : RestaurantList");
             RMSController rmsController = this;
             RMSRepository rMSRepository = new RMSRepository(rmsController._loggerFactory.CreateLogger<RMSRepository>());
-            List<RestaurantViewAPIModel> productViewAPIModels = await rMSRepository.RestaurantListAPI();
+            List<RestaurantViewAPIModel> productViewAPIModels = await rMSRepository.RestaurantListAPI(resList);
             _logger.LogInformation("Exit : RestaurantList");
             return Ok(productViewAPIModels);
 

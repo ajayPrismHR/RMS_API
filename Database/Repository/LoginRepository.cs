@@ -104,8 +104,8 @@ namespace SURAKSHA.Database.Repository
             parmretStatus.Size = 8;
             parmretStatus.Direction = ParameterDirection.Output;
             SqlParameter[] param ={
-                new SqlParameter("@Emp_Name",User.LoginId),
-                new SqlParameter("@PASSWORD",str),
+                new SqlParameter("@Mobile_no",User.LoginId),
+                new SqlParameter("@Pin",str),
                     parmretStatus};
             try
             {
@@ -149,15 +149,11 @@ namespace SURAKSHA.Database.Repository
             new SqlParameter("@MailID",  User.MailID),
             new SqlParameter("@Address",  User.Address),
             new SqlParameter("@Area_Code",  User.Area_Code),
-            new SqlParameter("@UserType",  User.UserType),
             new SqlParameter("@Image",  User.Image),
             new SqlParameter("@Password",   Utility.EncryptText(User.Password)),
             new SqlParameter("@Lat",  User.Lat),
             new SqlParameter("@Long",  User.Long),
-            new SqlParameter("@Updatedby",User.Updatedby),
-            new SqlParameter("@UpdateOn",User.UpdateOn),
-            new SqlParameter("@RegisteredBy",User.RegisteredBy), 
-            new SqlParameter("@RegisteredOn",User.RegisteredOn),
+            
             outRetStatus , outRetMessage};
 
 
@@ -165,10 +161,10 @@ namespace SURAKSHA.Database.Repository
             {
                 SqlHelper.ExecuteNonQuery(conn, CommandType.StoredProcedure, "User_Registration", param);
                 response = new RMS_API.Models.Response();
-                if (param[16].Value != DBNull.Value)// status
-                    response.Status = Convert.ToInt16(param[16].Value );
-                if (param[17].Value != DBNull.Value)// status
-                    response.message = Convert.ToString(param[17].Value);
+                if (param[11].Value != DBNull.Value)// status
+                    response.Status = Convert.ToInt16(param[11].Value );
+                if (param[12].Value != DBNull.Value)// status
+                    response.message = Convert.ToString(param[12].Value);
 
             }
             catch (Exception ex)

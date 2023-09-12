@@ -15,6 +15,8 @@ using System.Text.Json.Nodes;
 using System.Text.Json;
 
 using RMS_API.Models.ViewModel;
+using System.Security.AccessControl;
+
 namespace SURAKSHA.Controllers
 {
    
@@ -142,8 +144,9 @@ namespace SURAKSHA.Controllers
                 PropertyNameCaseInsensitive = true
             });
 
-          
-
+            Random rnd = new Random();
+            int rndmunber = rnd.Next(1, 1000);
+            userObj.registrationID = "PM" + userObj.MobileNo.Substring(userObj.MobileNo.Length - 5) + rndmunber.ToString();
             ModelFile file = new ModelFile();
             file.ImageFile = user.ImageFile;
             string filename = file.ImageFile.FileName;

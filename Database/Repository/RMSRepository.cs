@@ -22,12 +22,16 @@ namespace SURAKSHA_API.Database.Repository
             _logger = logger;
         }
 
-        public async Task<List<RestaurantViewAPIModel>> RestaurantListAPI()
+        public async Task<List<RestaurantViewAPIModel>> RestaurantListAPI(RestaurantListModel resList)
         {
             List<RestaurantViewAPIModel> restaurantViewAPIModels = new List<RestaurantViewAPIModel>();
             try
             {
-                DataSet dataSet = await SqlHelper.ExecuteDatasetAsync(conn, CommandType.StoredProcedure, "RestaurantList");
+                SqlParameter[] param ={
+                new SqlParameter("@current_Lat",resList.Current_Lat),
+                new SqlParameter("@current_Log",resList.Current_Log),
+                new SqlParameter("@filter",resList.FilterRange)};
+                DataSet dataSet = await SqlHelper.ExecuteDatasetAsync(conn, CommandType.StoredProcedure, "RestaurantList", param);
                 restaurantViewAPIModels = AppSettingsHelper.ToListof<RestaurantViewAPIModel>(dataSet.Tables[0]);
             }
             catch (Exception ex)
