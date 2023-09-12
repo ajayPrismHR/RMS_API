@@ -53,29 +53,29 @@ namespace SURAKSHA_API.Database.Repository
             return  productViewAPIModel;
         }
 
-        public async Task<int> CheckMobileNoAPI(MobileNoCheck mobileno)
-        {
-            List<RestaurantViewAPIModel> restaurantViewAPIModels = new List<RestaurantViewAPIModel>();
-            int retStatus = 0;
-            SqlParameter parmretStatus = new SqlParameter();
-            parmretStatus.ParameterName = "@Ret_Status";
-            parmretStatus.DbType = DbType.Int32;
-            parmretStatus.Size = 8;
-            parmretStatus.Direction = ParameterDirection.Output;
+        //public async Task<int> CheckMobileNoAPI(MobileNoCheck mobileno)
+        //{
+        //    List<RestaurantViewAPIModel> restaurantViewAPIModels = new List<RestaurantViewAPIModel>();
+        //    int retStatus = 0;
+        //    SqlParameter parmretStatus = new SqlParameter();
+        //    parmretStatus.ParameterName = "@Ret_Status";
+        //    parmretStatus.DbType = DbType.Int32;
+        //    parmretStatus.Size = 8;
+        //    parmretStatus.Direction = ParameterDirection.Output;
 
-            SqlParameter[] param ={
-            new SqlParameter("@MobileNO",(object) mobileno.MobileNo),
-            parmretStatus
-            };
-            SqlHelper.ExecuteNonQuery(conn, CommandType.StoredProcedure, "Check_MobileNo", param);
+        //    SqlParameter[] param ={
+        //    new SqlParameter("@MobileNO",(object) mobileno.MobileNo),
+        //    parmretStatus
+        //    };
+        //    SqlHelper.ExecuteNonQuery(conn, CommandType.StoredProcedure, "Check_MobileNo", param);
 
-            if (param[10].Value != DBNull.Value)// status
-                retStatus = Convert.ToInt32(param[10].Value);
-            else
-                retStatus = 0;
-            return retStatus;
+        //    if (param[10].Value != DBNull.Value)// status
+        //        retStatus = Convert.ToInt32(param[10].Value);
+        //    else
+        //        retStatus = 0;
+        //    return retStatus;
             
-        }
+        //}
 
     }
 }

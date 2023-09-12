@@ -15,8 +15,6 @@ using System.Text.Json.Nodes;
 using System.Text.Json;
 
 using RMS_API.Models.ViewModel;
-
-
 namespace SURAKSHA.Controllers
 {
    
@@ -201,7 +199,35 @@ namespace SURAKSHA.Controllers
             await _fileService.Upload(file,random.Next().ToString());
             return Ok("success");
         }
+        #region Check Mobile No 
+        [HttpPost]
+        [Route("CheckMobileNo")]
 
+        public async Task<IActionResult> CheckMobileNo(MobileNoCheck mobileno)
+        {
+            _logger.LogInformation("Start : Check Mobile No.");
+            LoginController loginController = this;
+            LoginRepository loginRepository = new LoginRepository(loginController._loggerFactory.CreateLogger<LoginRepository>());
+            ReturnStatusModel returnStatus = new ReturnStatusModel();
+            int retStatus = 0;
+            retStatus = await loginRepository.CheckMobileNoAPI(mobileno);
+            _logger.LogInformation("Exit : Check Mobile No.");
+            if (retStatus == 1)
+            {
+                returnStatus.response = 1;
+                returnStatus.status = "Mobile No. Exists";
+                return Ok(returnStatus);
+            }
+
+            else
+            {
+                returnStatus.response = 0;
+                returnStatus.status = "Mobile No. Does Not Exists";
+                return Ok(returnStatus);
+            }
+
+        }
+        #endregion
 
     }
 }

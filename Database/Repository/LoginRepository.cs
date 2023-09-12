@@ -16,6 +16,7 @@ using System.Net;
 using System.Runtime.InteropServices;
 using System;
 using RMS_API.Models.ViewModel;
+using RMS_API.Models.QueryModel;
 
 namespace SURAKSHA.Database.Repository
 {
@@ -177,6 +178,30 @@ namespace SURAKSHA.Database.Repository
                 response.message = "Internal Server Error";
             }
             return Task.FromResult<RMS_API.Models.Response>(response);
+        }
+
+        public async Task<int> CheckMobileNoAPI(MobileNoCheck mobileno)
+        {
+            List<RestaurantViewAPIModel> restaurantViewAPIModels = new List<RestaurantViewAPIModel>();
+            int retStatus = 0;
+            SqlParameter parmretStatus = new SqlParameter();
+            parmretStatus.ParameterName = "@Ret_Status";
+            parmretStatus.DbType = DbType.Int32;
+            parmretStatus.Size = 8;
+            parmretStatus.Direction = ParameterDirection.Output;
+
+            SqlParameter[] param ={
+            new SqlParameter("@MobileNO",(object) mobileno.MobileNo),
+            parmretStatus
+            };
+            SqlHelper.ExecuteNonQuery(conn, CommandType.StoredProcedure, "Check_MobileNo", param);
+
+            if (param[1].Value != DBNull.Value)// status
+                retStatus = Convert.ToInt32(param[1].Value);
+            else
+                retStatus = 0;
+            return retStatus;
+
         }
 
     }
