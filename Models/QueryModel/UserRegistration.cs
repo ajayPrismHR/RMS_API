@@ -39,6 +39,9 @@ public class UserRegistration
         public string Image { get; set; }
         public string Lat { get; set; }
         public string Long { get; set; }
+
+        public string Gender { get; set; }
+        public DateTime DOB { get; set; }
     }
 
 }

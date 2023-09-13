@@ -66,6 +66,22 @@ namespace SURAKSHA.Controllers
         }
         #endregion
 
+        #region RestaurantList 
+        [HttpPost]
+        [Route("GetUserDetail")]
+
+        public async Task<IActionResult> GetUserDetail(MobileNoCheck Mobile_no)
+        {
+            _logger.LogInformation("Start : UserDetail");
+            RMSController rmsController = this;
+            RMSRepository rMSRepository = new RMSRepository(rmsController._loggerFactory.CreateLogger<RMSRepository>());
+            List<UserDetailModel> UserDetailAPIModels = await rMSRepository.GetUserDetailAPI(Mobile_no);
+            _logger.LogInformation("Exit : UserDetail");
+            return Ok(UserDetailAPIModels);
+
+        }
+        #endregion
+
         [HttpPost]
         [Route("SendSMS")]
         public IActionResult  SendSMS()

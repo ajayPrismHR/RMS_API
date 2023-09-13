@@ -153,7 +153,9 @@ namespace SURAKSHA.Database.Repository
             new SqlParameter("@Password",   Utility.EncryptText(User.Password)),
             new SqlParameter("@Lat",  User.Lat),
             new SqlParameter("@Long",  User.Long),
-            
+            new SqlParameter("@Gender",  User.Gender),
+            new SqlParameter("@DOB",  User.DOB),
+
             outRetStatus , outRetMessage};
 
 
@@ -161,10 +163,10 @@ namespace SURAKSHA.Database.Repository
             {
                 SqlHelper.ExecuteNonQuery(conn, CommandType.StoredProcedure, "User_Registration", param);
                 response = new RMS_API.Models.Response();
-                if (param[11].Value != DBNull.Value)// status
-                    response.Status = Convert.ToInt16(param[11].Value );
-                if (param[12].Value != DBNull.Value)// status
-                    response.message = Convert.ToString(param[12].Value);
+                if (param[13].Value != DBNull.Value)// status
+                    response.Status = Convert.ToInt16(param[13].Value );
+                if (param[14].Value != DBNull.Value)// status
+                    response.message = Convert.ToString(param[14].Value);
 
             }
             catch (Exception ex)
