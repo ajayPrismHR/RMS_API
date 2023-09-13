@@ -9,6 +9,7 @@ using System.Data.SqlClient;
 using System.Net;
 using RMS_API.Models.ViewModel;
 using RMS_API.Models.QueryModel;
+using Microsoft.Extensions.Azure;
 
 namespace SURAKSHA_API.Database.Repository
 {
@@ -17,9 +18,13 @@ namespace SURAKSHA_API.Database.Repository
     {
         private readonly ILogger<RMSRepository> _logger;
         private string conn = AppSettingsHelper.Setting(Key: "ConnectionStrings:DevConn");
-        public RMSRepository(ILogger<RMSRepository> logger)
+        private IConfiguration _conConfig;
+        
+
+        public RMSRepository(ILogger<RMSRepository> logger,IConfiguration configuration)
         {
             _logger = logger;
+            _conConfig = configuration;
         }
 
         public async Task<List<RestaurantViewAPIModel>> RestaurantListAPI(RestaurantListModel resList)
@@ -42,15 +47,18 @@ namespace SURAKSHA_API.Database.Repository
             return restaurantViewAPIModels;
         }
 
-        public async Task<List<UserDetailModel>> GetUserDetailAPI(MobileNoCheck Mobile_no)
+        public async Task<UserDetailModel> GetUserDetailAPI(MobileNoCheck Mobile_no)
         {
-            List<UserDetailModel> UserDetailAPIModels = new List<UserDetailModel>();
+            UserDetailModel ?UserDetailAPIModels = new UserDetailModel();
             try
             {
                 SqlParameter[] param ={
                 new SqlParameter("@Mobile_NO",Mobile_no.MobileNo)};
                 DataSet dataSet = await SqlHelper.ExecuteDatasetAsync(conn, CommandType.StoredProcedure, "Get_User_Detail", param);
-                UserDetailAPIModels = AppSettingsHelper.ToListof<UserDetailModel>(dataSet.Tables[0]);
+                UserDetailAPIModels = AppSettingsHelper.ToSingleObject<UserDetailModel>(dataSet.Tables[0]);
+                string ContainerUrl = _conConfig["URL:containerURL"];
+                if (UserDetailAPIModels!=null)
+                UserDetailAPIModels.IMAGE = ContainerUrl + UserDetailAPIModels.IMAGE;
             }
             catch (Exception ex)
             {

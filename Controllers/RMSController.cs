@@ -15,19 +15,22 @@ using Azure.Communication.Sms;
 
 namespace SURAKSHA.Controllers
 {
-    [Authorize]
+    //[Authorize]
     [ApiController]
     [Route("[controller]")]
     public class RMSController : ControllerBase
     {
         private readonly ILogger _logger;
         private readonly ILoggerFactory _loggerFactory;
-        
+        private readonly IConfiguration  _configuration;
+
+
         #region Constructor
-        public RMSController(ILogger<RMSController> logger, ILoggerFactory loggerFactory)
+        public RMSController(ILogger<RMSController> logger, ILoggerFactory loggerFactory, IConfiguration configuration)
         {
             _logger = logger;
             _loggerFactory = loggerFactory;
+            _configuration = configuration;
 
         }
         #endregion
@@ -41,7 +44,7 @@ namespace SURAKSHA.Controllers
         {
             _logger.LogInformation("Start : ProductList");
             RMSController rmsController = this;
-            RMSRepository rMSRepository    = new RMSRepository(rmsController._loggerFactory.CreateLogger<RMSRepository>());
+            RMSRepository rMSRepository    = new RMSRepository(rmsController._loggerFactory.CreateLogger<RMSRepository>(), _configuration);
             List<ProductViewAPIModel> productViewAPIModels = await rMSRepository.GetProductList();
 
             _logger.LogInformation("Exit : UserRegistration");
@@ -58,7 +61,7 @@ namespace SURAKSHA.Controllers
         {
             _logger.LogInformation("Start : RestaurantList");
             RMSController rmsController = this;
-            RMSRepository rMSRepository = new RMSRepository(rmsController._loggerFactory.CreateLogger<RMSRepository>());
+            RMSRepository rMSRepository = new RMSRepository(rmsController._loggerFactory.CreateLogger<RMSRepository>(), _configuration);
             List<RestaurantViewAPIModel> productViewAPIModels = await rMSRepository.RestaurantListAPI(resList);
             _logger.LogInformation("Exit : RestaurantList");
             return Ok(productViewAPIModels);
@@ -74,8 +77,8 @@ namespace SURAKSHA.Controllers
         {
             _logger.LogInformation("Start : UserDetail");
             RMSController rmsController = this;
-            RMSRepository rMSRepository = new RMSRepository(rmsController._loggerFactory.CreateLogger<RMSRepository>());
-            List<UserDetailModel> UserDetailAPIModels = await rMSRepository.GetUserDetailAPI(Mobile_no);
+            RMSRepository rMSRepository = new RMSRepository(rmsController._loggerFactory.CreateLogger<RMSRepository>(), _configuration);
+            UserDetailModel UserDetailAPIModels = await rMSRepository.GetUserDetailAPI(Mobile_no);
             _logger.LogInformation("Exit : UserDetail");
             return Ok(UserDetailAPIModels);
 
