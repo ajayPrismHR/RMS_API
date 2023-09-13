@@ -11,6 +11,7 @@ using RMS_API.Models.QueryModel;
 using SURAKSHA.Database.Repository;
 using System.Text.Json;
 using RMS_API.Models.ViewModel;
+using Azure.Communication.Sms;
 
 namespace SURAKSHA.Controllers
 {
@@ -53,47 +54,40 @@ namespace SURAKSHA.Controllers
         [HttpPost]
         [Route("RestaurantList")]
 
-        public async Task<IActionResult> RestaurantList(RestaurantListModel resList)
+        public async Task<IActionResult> RestaurantList()
         {
             _logger.LogInformation("Start : RestaurantList");
             RMSController rmsController = this;
             RMSRepository rMSRepository = new RMSRepository(rmsController._loggerFactory.CreateLogger<RMSRepository>());
-            List<RestaurantViewAPIModel> productViewAPIModels = await rMSRepository.RestaurantListAPI(resList);
+            List<RestaurantViewAPIModel> productViewAPIModels = await rMSRepository.RestaurantListAPI();
             _logger.LogInformation("Exit : RestaurantList");
             return Ok(productViewAPIModels);
 
         }
         #endregion
 
-        //#region Check Mobile No 
-        //[HttpPost]
-        //[Route("CheckMobileNo")]
+        [HttpPost]
+        [Route("SendSMS")]
+        public IActionResult  SendSMS()
+        {
 
-        //public async Task<IActionResult> CheckMobileNo(MobileNoCheck mobileno)
-        //{
-        //    _logger.LogInformation("Start : Check Mobile No.");
-        //    RMSController rmsController = this;
-        //    RMSRepository rMSRepository = new RMSRepository(rmsController._loggerFactory.CreateLogger<RMSRepository>());
-        //    ReturnStatusModel returnStatus = new ReturnStatusModel();
-        //    int retStatus = 0;
-        //    retStatus = await rMSRepository.CheckMobileNoAPI(mobileno);
-        //    _logger.LogInformation("Exit : Check Mobile No.");
-        //    if (retStatus == 1)
-        //    {
-        //        returnStatus.response = 1;
-        //        returnStatus.status = "Mobile No. Exists";
-        //        return Ok(returnStatus);
-        //    }
+            string connectionString = "endpoint=https://respmsmsapp.unitedstates.communication.azure.com/;accesskey=Z8ZbdJFadcJWWV7j6qaAlBAFWHG5pK+4Gf4MGIAe2cvyQWHYyFTcoDaEqbyCdDHm93MXeiLV1lZGz+c3l7WWNA==";
+            SmsClient smsClient = new SmsClient(connectionString);
+            smsClient.Send(
+                
+                from: "+919166188989", 
+                to:  new string[] { "+919828031268" }, 
+                message: "Test message from Punch Mate",
+                options: new SmsSendOptions(enableDeliveryReport: true)
+                {
+                    Tag = "food",
 
-        //    else
-        //    {
-        //        returnStatus.response = 0;
-        //        returnStatus.status = "Mobile No. Does Not Exists";
-        //        return Ok(returnStatus);
-        //    }
 
-        //}
-        //#endregion
+                });   
+
+            return Ok();
+        }
+
     }
 
 }
