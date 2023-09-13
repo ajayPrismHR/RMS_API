@@ -166,7 +166,46 @@ namespace SURAKSHA.Controllers
             return Ok(response);
 
         }
-      #endregion
+        #endregion
+
+        #region RestaurantRegistration 
+        [HttpPost]
+        [Route("RestaurantRegistration")]
+
+        public async Task<IActionResult> RestaurantRegistration([FromForm] MasterRestaurantRegitrationModel restaurant)
+        {
+            _logger.LogInformation("Start : RestaurantRegistration");
+            LoginController loginController = this;
+            var json = restaurant.Restaurantinfo;
+
+            var userObj = JsonSerializer.Deserialize<RestaurantRegitrationModel>(json, new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            });
+
+            Random rnd = new Random();
+            int rndmunber = rnd.Next(1, 1000);
+            userObj.registrationID = "PM" + userObj.MobileNo.Substring(userObj.MobileNo.Length - 5) + rndmunber.ToString();
+            ModelFile file = new ModelFile();
+            file.ImageFile = restaurant.ImageFile;
+            string filename = file.ImageFile.FileName;
+            FileInfo fi = new FileInfo(filename);
+            string fileNametoSave = userObj.registrationID + "_" + Guid.NewGuid() + fi.Extension;
+            userObj.Image = fileNametoSave;
+
+            LoginRepository loginRepository = new LoginRepository(loginController._loggerFactory.CreateLogger<LoginRepository>());
+            RMS_API.Models.Response response = await loginRepository.RestaurantRegistrationAPI(userObj);
+            if (response.Status > 0)
+            {
+                await _fileService.Upload(
+                                            file, fileNametoSave
+                                         );
+            }
+            _logger.LogInformation("Exit : RestaurantRegistration");
+            return Ok(response);
+
+        }
+        #endregion
 
         [HttpPost]
         [Route("ChangePassword")]
