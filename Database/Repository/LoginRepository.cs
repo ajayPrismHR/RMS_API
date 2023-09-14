@@ -178,6 +178,57 @@ namespace SURAKSHA.Database.Repository
             return Task.FromResult<RMS_API.Models.Response>(response);
         }
 
+        public Task<RMS_API.Models.Response> RestaurantRegistrationAPI(RestaurantRegitrationModel User)
+        {
+            RMS_API.Models.Response response;
+
+            SqlParameter outRetStatus = new SqlParameter();
+            outRetStatus.ParameterName = "@Ret_Status";
+            outRetStatus.DbType = DbType.Int32;
+            outRetStatus.Size = 8;
+            outRetStatus.Direction = ParameterDirection.Output;
+
+            SqlParameter outRetMessage = new SqlParameter();
+            outRetMessage.ParameterName = "@Ret_Message";
+            outRetMessage.DbType = DbType.String;
+            outRetMessage.Size = 1000;
+            outRetMessage.Direction = ParameterDirection.Output;
+
+            SqlParameter[] param ={
+            new SqlParameter("@RegistrationID",  User.registrationID),
+            new SqlParameter("@RestaurentName",  User.RestaurentName),
+            new SqlParameter("@MobileNo",  User.MobileNo),
+            new SqlParameter("@MailID",  User.MailID),
+            new SqlParameter("@Address",  User.Address),
+            new SqlParameter("@Area_Code",  User.Area_Code),
+            new SqlParameter("@Image",  User.Image),
+            new SqlParameter("@Password",   Utility.EncryptText(User.Password)),
+            new SqlParameter("@Lat",  User.Lat),
+            new SqlParameter("@Long",  User.Long),
+            new SqlParameter("@Timings",  User.Timings),
+
+            outRetStatus , outRetMessage};
+
+
+            try
+            {
+                SqlHelper.ExecuteNonQuery(conn, CommandType.StoredProcedure, "Restaurent_Registration", param);
+                response = new RMS_API.Models.Response();
+                if (param[11].Value != DBNull.Value)// status
+                    response.Status = Convert.ToInt16(param[11].Value);
+                if (param[12].Value != DBNull.Value)// status
+                    response.message = Convert.ToString(param[12].Value);
+
+            }
+            catch (Exception ex)
+            {
+                response = new RMS_API.Models.Response();
+                response.Status = -1;
+                response.message = "Internal Server Error";
+            }
+            return Task.FromResult<RMS_API.Models.Response>(response);
+        }
+
         public async Task<int> CheckMobileNoAPI(MobileNoCheck mobileno)
         {
             List<RestaurantViewAPIModel> restaurantViewAPIModels = new List<RestaurantViewAPIModel>();
