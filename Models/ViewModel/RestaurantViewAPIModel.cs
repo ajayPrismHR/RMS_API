@@ -10,7 +10,8 @@
          public string Area_Code { get; set; } = string.Empty;
          public string Image { get; set; } = string.Empty;
          public string Lat { get; set; } = string.Empty;
-         public string Long { get; set; } = string.Empty;  
+         public string Long { get; set; } = string.Empty;
+        public string Distance { get; set; } = string.Empty;
 
 
     }
