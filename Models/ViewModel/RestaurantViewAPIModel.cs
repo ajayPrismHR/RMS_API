@@ -9,10 +9,9 @@
          public string Address { get; set; } = string.Empty;
          public string Area_Code { get; set; } = string.Empty;
          public string Image { get; set; } = string.Empty;
-         public string Lat { get; set; } = string.Empty;
-         public string Long { get; set; } = string.Empty;
-        public string Distance { get; set; } = string.Empty;
-
+         public double Lat { get; set; } 
+         public double Long { get; set; }
+        public double Distance { get; set; } 
 
     }
 }

@@ -40,14 +40,14 @@ namespace SURAKSHA.Controllers
         [HttpPost]
         [Route("ProductList")]
 
-        public async Task<IActionResult> ProductList()
+        public async Task<IActionResult> ProductList(RestaurantIDModel restaurantRegistrationID)
         {
             _logger.LogInformation("Start : ProductList");
             RMSController rmsController = this;
             RMSRepository rMSRepository    = new RMSRepository(rmsController._loggerFactory.CreateLogger<RMSRepository>(), _configuration);
-            List<ProductViewAPIModel> productViewAPIModels = await rMSRepository.GetProductList();
+            List<ProductViewAPIModel> productViewAPIModels = await rMSRepository.GetProductList(restaurantRegistrationID);
 
-            _logger.LogInformation("Exit : UserRegistration");
+            _logger.LogInformation("Exit : ProductList");
             return Ok(productViewAPIModels);
 
         }

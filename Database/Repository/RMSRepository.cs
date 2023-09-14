@@ -32,12 +32,15 @@ namespace SURAKSHA_API.Database.Repository
             List<RestaurantViewAPIModel> restaurantViewAPIModels = new List<RestaurantViewAPIModel>();
             try
             {
+                string ContainerUrl = _conConfig["URL:containerURL"];
                 SqlParameter[] param ={
                 new SqlParameter("@current_Lat",resList.Current_Lat),
                 new SqlParameter("@current_Log",resList.Current_Log),
                 new SqlParameter("@filter",resList.FilterRange)};
                 DataSet dataSet = await SqlHelper.ExecuteDatasetAsync(conn, CommandType.StoredProcedure, "RestaurantList", param);
                 restaurantViewAPIModels = AppSettingsHelper.ToListof<RestaurantViewAPIModel>(dataSet.Tables[0]);
+
+                restaurantViewAPIModels.ForEach(x => x.Image = ContainerUrl + x.Image);
             }
             catch (Exception ex)
             {
@@ -67,13 +70,17 @@ namespace SURAKSHA_API.Database.Repository
             }
             return UserDetailAPIModels;
         }
-        public async Task<List<ProductViewAPIModel>> GetProductList()
+        public async Task<List<ProductViewAPIModel>> GetProductList(RestaurantIDModel restaurantRegistrationID)
         {
             List<ProductViewAPIModel> productViewAPIModel = new List<ProductViewAPIModel>();
             try
             {
-                DataSet dataSet = await SqlHelper.ExecuteDatasetAsync(conn, CommandType.StoredProcedure, "All_Product_List");
+                string ContainerUrl = _conConfig["URL:containerURL"];
+                SqlParameter[] param ={
+                new SqlParameter("@RegistrationID", restaurantRegistrationID.RestaurantRegistrationID)};
+                DataSet dataSet = await SqlHelper.ExecuteDatasetAsync(conn, CommandType.StoredProcedure, "Restaurent_Product_List", param);
                 productViewAPIModel = AppSettingsHelper.ToListof<ProductViewAPIModel>(dataSet.Tables[0]);
+                productViewAPIModel.ForEach(x => x.Image = ContainerUrl + x.Image);
             }
             catch (Exception ex)
             {
