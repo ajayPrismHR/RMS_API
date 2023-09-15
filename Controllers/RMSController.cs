@@ -69,6 +69,22 @@ namespace SURAKSHA.Controllers
         }
         #endregion
 
+        #region SearchRestaurantList 
+        [HttpPost]
+        [Route("SearchRestaurantList")]
+
+        public async Task<IActionResult> SearchRestaurantList(SearchRestaurantModel resList)
+        {
+            _logger.LogInformation("Start : RestaurantList");
+            RMSController rmsController = this;
+            RMSRepository rMSRepository = new RMSRepository(rmsController._loggerFactory.CreateLogger<RMSRepository>(), _configuration);
+            List<RestaurantViewAPIModel> productViewAPIModels = await rMSRepository.SearchRestaurantListAPI(resList);
+            _logger.LogInformation("Exit : RestaurantList");
+            return Ok(productViewAPIModels);
+
+        }
+        #endregion
+
         #region RestaurantList 
         [HttpPost]
         [Route("GetUserDetail")]

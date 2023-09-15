@@ -50,6 +50,29 @@ namespace SURAKSHA_API.Database.Repository
             return restaurantViewAPIModels;
         }
 
+        public async Task<List<RestaurantViewAPIModel>> SearchRestaurantListAPI(SearchRestaurantModel resList)
+        {
+            List<RestaurantViewAPIModel> restaurantViewAPIModels = new List<RestaurantViewAPIModel>();
+            try
+            {
+                string ContainerUrl = _conConfig["URL:containerURL"];
+                SqlParameter[] param ={
+                new SqlParameter("@current_Lat",resList.Current_Lat),
+                new SqlParameter("@current_Log",resList.Current_Log),
+                new SqlParameter("@Name",resList.Name)};
+                DataSet dataSet = await SqlHelper.ExecuteDatasetAsync(conn, CommandType.StoredProcedure, "SearchRestaurantList", param);
+                restaurantViewAPIModels = AppSettingsHelper.ToListof<RestaurantViewAPIModel>(dataSet.Tables[0]);
+
+                restaurantViewAPIModels.ForEach(x => x.Image = ContainerUrl + x.Image);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+
+            }
+            return restaurantViewAPIModels;
+        }
+
         public async Task<UserDetailModel> GetUserDetailAPI(MobileNoCheck Mobile_no)
         {
             UserDetailModel ?UserDetailAPIModels = new UserDetailModel();
