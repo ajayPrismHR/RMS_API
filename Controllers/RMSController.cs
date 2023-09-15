@@ -75,11 +75,27 @@ namespace SURAKSHA.Controllers
 
         public async Task<IActionResult> SearchRestaurantList(SearchRestaurantModel resList)
         {
-            _logger.LogInformation("Start : RestaurantList");
+            _logger.LogInformation("Start : SearchRestaurantList");
             RMSController rmsController = this;
             RMSRepository rMSRepository = new RMSRepository(rmsController._loggerFactory.CreateLogger<RMSRepository>(), _configuration);
             List<RestaurantViewAPIModel> productViewAPIModels = await rMSRepository.SearchRestaurantListAPI(resList);
-            _logger.LogInformation("Exit : RestaurantList");
+            _logger.LogInformation("Exit : SearchRestaurantList");
+            return Ok(productViewAPIModels);
+
+        }
+        #endregion
+
+        #region FavouritehRestaurantList 
+        [HttpPost]
+        [Route("FavouritehRestaurantList")]
+
+        public async Task<IActionResult> FavouritehRestaurantList(FavouriteRestaurantListSearchModel resList)
+        {
+            _logger.LogInformation("Start : FavouriteRestaurantList");
+            RMSController rmsController = this;
+            RMSRepository rMSRepository = new RMSRepository(rmsController._loggerFactory.CreateLogger<RMSRepository>(), _configuration);
+            List<RestaurantViewAPIModel> productViewAPIModels = await rMSRepository.FavouritehRestaurantListAPI(resList);
+            _logger.LogInformation("Exit : FavouriteRestaurantList");
             return Ok(productViewAPIModels);
 
         }
@@ -121,6 +137,37 @@ namespace SURAKSHA.Controllers
                 });   
 
             return Ok();
+        }
+
+        [HttpPost]
+        [Route("ManageFevouriteRestaurants")]
+        public async Task<IActionResult> ManageFevouriteRestaurants(ManageRestaurantFavouritesModel FevRes)
+        {
+            int retStatus = 0;
+            RMSController rmsController = this;
+            RMSRepository rMSRepository = new RMSRepository(rmsController._loggerFactory.CreateLogger<RMSRepository>(), _configuration);
+            ReturnStatusModel returnStatus = new ReturnStatusModel();
+            UserViewAPIModel userViewApiModel = new UserViewAPIModel();
+            retStatus = await rMSRepository.ManageFevouriteRestaurantsList(FevRes);
+            if (retStatus == 1)
+            {
+                returnStatus.response = 1;
+                returnStatus.status = "Successfully Added to Favourites";
+                return Ok(returnStatus);
+            }
+            else if (retStatus == 2)
+            {
+                returnStatus.response = 1;
+                returnStatus.status = "Successfully Removed from Favourites";
+                return Ok(returnStatus);
+            }
+            else
+            {
+                returnStatus.response = 0;
+                returnStatus.status = "Error Occured";
+                return Ok(returnStatus);
+            }
+
         }
 
     }

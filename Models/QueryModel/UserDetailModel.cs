@@ -2,6 +2,7 @@
 {
     public class UserDetailModel
     {
+        public Int64 ID { get; set; }
         public string FIRSTNAME { get; set; }
         public string LASTNAME { get; set; }
         public string MOBILENO { get; set; }

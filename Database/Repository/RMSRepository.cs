@@ -73,6 +73,29 @@ namespace SURAKSHA_API.Database.Repository
             return restaurantViewAPIModels;
         }
 
+        public async Task<List<RestaurantViewAPIModel>> FavouritehRestaurantListAPI(FavouriteRestaurantListSearchModel resList)
+        {
+            List<RestaurantViewAPIModel> restaurantViewAPIModels = new List<RestaurantViewAPIModel>();
+            try
+            {
+                string ContainerUrl = _conConfig["URL:containerURL"];
+                SqlParameter[] param ={
+                new SqlParameter("@current_Lat",resList.Current_Lat),
+                new SqlParameter("@current_Log",resList.Current_Log),
+                new SqlParameter("@UserID",resList.UserID)};
+                DataSet dataSet = await SqlHelper.ExecuteDatasetAsync(conn, CommandType.StoredProcedure, "FevouriteRestaurantList", param);
+                restaurantViewAPIModels = AppSettingsHelper.ToListof<RestaurantViewAPIModel>(dataSet.Tables[0]);
+
+                restaurantViewAPIModels.ForEach(x => x.Image = ContainerUrl + x.Image);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+
+            }
+            return restaurantViewAPIModels;
+        }
+
         public async Task<UserDetailModel> GetUserDetailAPI(MobileNoCheck Mobile_no)
         {
             UserDetailModel ?UserDetailAPIModels = new UserDetailModel();
@@ -113,6 +136,39 @@ namespace SURAKSHA_API.Database.Repository
             return  productViewAPIModel;
         }
 
+        public async Task<int> ManageFevouriteRestaurantsList(ManageRestaurantFavouritesModel FevRes)
+        {
+            int retStatus = 0;
+            SqlParameter sqlParameter = new SqlParameter();
+            SqlParameter parmretStatus = new SqlParameter();
+            parmretStatus.ParameterName = "@Ret_Status";
+            parmretStatus.DbType = DbType.Int32;
+            parmretStatus.Size = 8;
+            parmretStatus.Direction = ParameterDirection.Output;
+            SqlParameter[] param ={
+                new SqlParameter("@RestaurantRegID",FevRes.RestaurantRegID),
+                new SqlParameter("@UserID",FevRes.UserID),
+                new SqlParameter("@Type",FevRes.Type),
+                    parmretStatus};
+            try
+            {
+                SqlHelper.ExecuteNonQuery(conn, CommandType.StoredProcedure, "ManageFevouriteRestaurants", param);
+
+                if (param[3].Value != DBNull.Value)// status
+                    retStatus = Convert.ToInt32(param[3].Value);
+                else
+                    retStatus = 0;
+            }
+            catch (Exception ex)
+            {
+                retStatus = -1;
+            }
+
+
+
+            return retStatus;
+        }
+
         //public async Task<int> CheckMobileNoAPI(MobileNoCheck mobileno)
         //{
         //    List<RestaurantViewAPIModel> restaurantViewAPIModels = new List<RestaurantViewAPIModel>();
@@ -134,7 +190,7 @@ namespace SURAKSHA_API.Database.Repository
         //    else
         //        retStatus = 0;
         //    return retStatus;
-            
+
         //}
 
     }
