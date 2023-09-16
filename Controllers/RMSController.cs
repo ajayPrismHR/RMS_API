@@ -152,13 +152,7 @@ namespace SURAKSHA.Controllers
             if (retStatus == 1)
             {
                 returnStatus.response = 1;
-                returnStatus.status = "Successfully Added to Favourites";
-                return Ok(returnStatus);
-            }
-            else if (retStatus == 2)
-            {
-                returnStatus.response = 1;
-                returnStatus.status = "Successfully Removed from Favourites";
+                returnStatus.status = "Successfully updated to Favourites";
                 return Ok(returnStatus);
             }
             else

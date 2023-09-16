@@ -148,14 +148,13 @@ namespace SURAKSHA_API.Database.Repository
             SqlParameter[] param ={
                 new SqlParameter("@RestaurantRegID",FevRes.RestaurantRegID),
                 new SqlParameter("@UserID",FevRes.UserID),
-                new SqlParameter("@Type",FevRes.Type),
                     parmretStatus};
             try
             {
                 SqlHelper.ExecuteNonQuery(conn, CommandType.StoredProcedure, "ManageFevouriteRestaurants", param);
 
-                if (param[3].Value != DBNull.Value)// status
-                    retStatus = Convert.ToInt32(param[3].Value);
+                if (param[2].Value != DBNull.Value)// status
+                    retStatus = Convert.ToInt32(param[2].Value);
                 else
                     retStatus = 0;
             }
