@@ -123,7 +123,8 @@ namespace SURAKSHA_API.Database.Repository
             {
                 string ContainerUrl = _conConfig["URL:containerURL"];
                 SqlParameter[] param ={
-                new SqlParameter("@RegistrationID", restaurantRegistrationID.RestaurantRegistrationID)};
+                new SqlParameter("@RegistrationID", restaurantRegistrationID.RestaurantRegistrationID),
+                new SqlParameter("@Userid", restaurantRegistrationID.UserID)};
                 DataSet dataSet = await SqlHelper.ExecuteDatasetAsync(conn, CommandType.StoredProcedure, "Restaurent_Product_List", param);
                 productViewAPIModel = AppSettingsHelper.ToListof<ProductViewAPIModel>(dataSet.Tables[0]);
                 productViewAPIModel.ForEach(x => x.Image = ContainerUrl + x.Image);

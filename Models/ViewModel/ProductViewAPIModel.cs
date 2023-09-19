@@ -7,5 +7,6 @@
         public bool Is_Alcoholic { get; set; } = false;
         public string Image { get; set; } = string.Empty;
         public string CategoryName { get; set; } = string.Empty;
+        public Int64 OrderedQuntity { get; set; } 
     }
 }

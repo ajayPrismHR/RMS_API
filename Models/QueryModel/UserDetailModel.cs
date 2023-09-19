@@ -12,6 +12,6 @@
         public string IMAGE { get; set; }
         public string GENDER { get; set; }
 
-        public string DOB { get; set; }
+        public DateTime DOB { get; set; }
     }
 }
