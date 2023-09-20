@@ -116,6 +116,23 @@ namespace SURAKSHA_API.Database.Repository
             }
             return UserDetailAPIModels;
         }
+
+        public async Task<OfferDetailModel> GetOfferDetailAPI()
+        {
+            OfferDetailModel? OfferDetailAPIModels = new OfferDetailModel();
+            try
+            {
+                DataSet dataSet = await SqlHelper.ExecuteDatasetAsync(conn, CommandType.StoredProcedure, "GetOfferMaster");
+                OfferDetailAPIModels = AppSettingsHelper.ToSingleObject<OfferDetailModel>(dataSet.Tables[0]);
+                string ContainerUrl = _conConfig["URL:containerURL"];
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+
+            }
+            return OfferDetailAPIModels;
+        }
         public async Task<List<ProductViewAPIModel>> GetProductList(RestaurantIDModel restaurantRegistrationID)
         {
             List<ProductViewAPIModel> productViewAPIModel = new List<ProductViewAPIModel>();
@@ -124,7 +141,8 @@ namespace SURAKSHA_API.Database.Repository
                 string ContainerUrl = _conConfig["URL:containerURL"];
                 SqlParameter[] param ={
                 new SqlParameter("@RegistrationID", restaurantRegistrationID.RestaurantRegistrationID),
-                new SqlParameter("@Userid", restaurantRegistrationID.UserID)};
+                new SqlParameter("@Userid", restaurantRegistrationID.UserID),
+                new SqlParameter("@Offerid", restaurantRegistrationID.OfferID)};
                 DataSet dataSet = await SqlHelper.ExecuteDatasetAsync(conn, CommandType.StoredProcedure, "Restaurent_Product_List", param);
                 productViewAPIModel = AppSettingsHelper.ToListof<ProductViewAPIModel>(dataSet.Tables[0]);
                 productViewAPIModel.ForEach(x => x.Image = ContainerUrl + x.Image);

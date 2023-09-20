@@ -117,6 +117,22 @@ namespace SURAKSHA.Controllers
         }
         #endregion
 
+        #region OfferList 
+        [HttpPost]
+        [Route("GetOfferDetail")]
+
+        public async Task<IActionResult> GetOfferDetail()
+        {
+            _logger.LogInformation("Start : OfferDetail");
+            RMSController rmsController = this;
+            RMSRepository rMSRepository = new RMSRepository(rmsController._loggerFactory.CreateLogger<RMSRepository>(), _configuration);
+            OfferDetailModel OfferDetailAPIModels = await rMSRepository.GetOfferDetailAPI();
+            _logger.LogInformation("Exit : OfferDetail");
+            return Ok(OfferDetailAPIModels);
+
+        }
+        #endregion
+
         [HttpPost]
         [Route("SendSMS")]
         public IActionResult  SendSMS()

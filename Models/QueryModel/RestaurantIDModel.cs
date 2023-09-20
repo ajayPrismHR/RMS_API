@@ -4,5 +4,6 @@
     {
         public string RestaurantRegistrationID { get; set; }
         public Int64 UserID { get; set; }
+        public Int64 OfferID { get; set; }
     }
 }
