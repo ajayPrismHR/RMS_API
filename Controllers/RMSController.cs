@@ -12,6 +12,7 @@ using SURAKSHA.Database.Repository;
 using System.Text.Json;
 using RMS_API.Models.ViewModel;
 using Azure.Communication.Sms;
+using System.Collections.Generic;
 
 namespace SURAKSHA.Controllers
 {
@@ -126,7 +127,7 @@ namespace SURAKSHA.Controllers
             _logger.LogInformation("Start : OfferDetail");
             RMSController rmsController = this;
             RMSRepository rMSRepository = new RMSRepository(rmsController._loggerFactory.CreateLogger<RMSRepository>(), _configuration);
-            OfferDetailModel OfferDetailAPIModels = await rMSRepository.GetOfferDetailAPI();
+            List < OfferDetailModel> OfferDetailAPIModels = await rMSRepository.GetOfferDetailAPI();
             _logger.LogInformation("Exit : OfferDetail");
             return Ok(OfferDetailAPIModels);
 

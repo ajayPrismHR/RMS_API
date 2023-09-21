@@ -117,13 +117,14 @@ namespace SURAKSHA_API.Database.Repository
             return UserDetailAPIModels;
         }
 
-        public async Task<OfferDetailModel> GetOfferDetailAPI()
+        public async Task<List<OfferDetailModel>> GetOfferDetailAPI()
         {
-            OfferDetailModel? OfferDetailAPIModels = new OfferDetailModel();
+            //OfferDetailModel? OfferDetailAPIModels = new OfferDetailModel();
+            List<OfferDetailModel> OfferDetailAPIModels = new List<OfferDetailModel>();
             try
             {
                 DataSet dataSet = await SqlHelper.ExecuteDatasetAsync(conn, CommandType.StoredProcedure, "GetOfferMaster");
-                OfferDetailAPIModels = AppSettingsHelper.ToSingleObject<OfferDetailModel>(dataSet.Tables[0]);
+                OfferDetailAPIModels = AppSettingsHelper.ToListof<OfferDetailModel>(dataSet.Tables[0]);
                 string ContainerUrl = _conConfig["URL:containerURL"];
             }
             catch (Exception ex)
