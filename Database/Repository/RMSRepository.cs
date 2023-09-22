@@ -106,8 +106,17 @@ namespace SURAKSHA_API.Database.Repository
                 DataSet dataSet = await SqlHelper.ExecuteDatasetAsync(conn, CommandType.StoredProcedure, "Get_User_Detail", param);
                 UserDetailAPIModels = AppSettingsHelper.ToSingleObject<UserDetailModel>(dataSet.Tables[0]);
                 string ContainerUrl = _conConfig["URL:containerURL"];
-                if (UserDetailAPIModels!=null)
-                UserDetailAPIModels.IMAGE = ContainerUrl + UserDetailAPIModels.IMAGE;
+                if (UserDetailAPIModels != null)
+                {
+                    if (UserDetailAPIModels.IMAGE == "")
+                    {
+                        UserDetailAPIModels.IMAGE = ContainerUrl + "no photo.jpg";
+                    }
+                    else
+                    {
+                        UserDetailAPIModels.IMAGE = ContainerUrl + UserDetailAPIModels.IMAGE;
+                    }
+                }
             }
             catch (Exception ex)
             {
