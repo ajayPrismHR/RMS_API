@@ -39,8 +39,11 @@ namespace SURAKSHA_API.Database.Repository
                 new SqlParameter("@filter",resList.FilterRange)};
                 DataSet dataSet = await SqlHelper.ExecuteDatasetAsync(conn, CommandType.StoredProcedure, "RestaurantList", param);
                 restaurantViewAPIModels = AppSettingsHelper.ToListof<RestaurantViewAPIModel>(dataSet.Tables[0]);
+                restaurantViewAPIModels.Where(itm => String.IsNullOrEmpty(itm.Image)).ToList().ForEach(x => x.Image = ContainerUrl + "no photo.jpg");
+                restaurantViewAPIModels.Where(itm => !String.IsNullOrEmpty(itm.Image)).ToList().ForEach(x => x.Image = ContainerUrl + x.Image);
 
-                restaurantViewAPIModels.ForEach(x => x.Image = ContainerUrl + x.Image);
+
+                //restaurantViewAPIModels.ForEach(x => x.Image = ContainerUrl + x.Image);
             }
             catch (Exception ex)
             {
@@ -86,8 +89,9 @@ namespace SURAKSHA_API.Database.Repository
                 new SqlParameter("@UserID",resList.UserID)};
                 DataSet dataSet = await SqlHelper.ExecuteDatasetAsync(conn, CommandType.StoredProcedure, "FevouriteRestaurantList", param);
                 restaurantViewAPIModels = AppSettingsHelper.ToListof<RestaurantViewAPIModel>(dataSet.Tables[0]);
-
-                restaurantViewAPIModels.ForEach(x => x.Image = ContainerUrl + x.Image);
+                restaurantViewAPIModels.Where(itm => String.IsNullOrEmpty(itm.Image)).ToList().ForEach(x => x.Image = ContainerUrl + "no photo.jpg");
+                restaurantViewAPIModels.Where(itm => !String.IsNullOrEmpty(itm.Image)).ToList().ForEach(x => x.Image = ContainerUrl + x.Image);
+                //restaurantViewAPIModels.ForEach(x => x.Image = ContainerUrl + x.Image);
             }
             catch (Exception ex)
             {
@@ -156,7 +160,11 @@ namespace SURAKSHA_API.Database.Repository
                 new SqlParameter("@Offerid", restaurantRegistrationID.OfferID)};
                 DataSet dataSet = await SqlHelper.ExecuteDatasetAsync(conn, CommandType.StoredProcedure, "Restaurent_Product_List", param);
                 productViewAPIModel = AppSettingsHelper.ToListof<ProductViewAPIModel>(dataSet.Tables[0]);
-                productViewAPIModel.ForEach(x => x.Image = ContainerUrl + x.Image);
+
+                productViewAPIModel.Where(itm => String.IsNullOrEmpty(itm.Image)).ToList().ForEach(x => x.Image = ContainerUrl + "no photo.jpg");
+                productViewAPIModel.Where(itm => !String.IsNullOrEmpty(itm.Image)).ToList().ForEach(x => x.Image = ContainerUrl + x.Image);
+
+                //productViewAPIModel.ForEach(x => x.Image = ContainerUrl + x.Image);
             }
             catch (Exception ex)
             {
