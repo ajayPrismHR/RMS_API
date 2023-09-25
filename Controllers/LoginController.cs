@@ -237,6 +237,8 @@ namespace SURAKSHA.Controllers
 
         public async Task<IActionResult> uploadImage([FromForm] ModelFile file)
         {
+            string name = await _fileService.GetFile("pexels-photo-3761464.jpeg");
+
             Random random = new Random();
             await _fileService.Upload(file,random.Next().ToString());
             return Ok("success");

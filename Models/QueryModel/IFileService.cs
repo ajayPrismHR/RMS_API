@@ -4,5 +4,7 @@
     {
         Task Upload(ModelFile modelFile , string imgfileName);
 
+        Task<string> GetFile(string imgfileName);
+
     }
 }
