@@ -54,6 +54,26 @@ namespace SURAKSHA.Controllers
         }
         #endregion
 
+        #region OrderCOunt 
+        [HttpPost]
+        [Route("OrderCOunt")]
+
+        public async Task<IActionResult> OrderCOunt(UserIDModel UserId)
+        {
+            _logger.LogInformation("Start : OrderCOunt");
+            RMSController rmsController = this;
+            ReturnStatusModel returnStatus = new ReturnStatusModel();
+            RMSRepository rMSRepository = new RMSRepository(rmsController._loggerFactory.CreateLogger<RMSRepository>(), _configuration);
+            int OrderCount = await rMSRepository.OrderCountList(UserId);
+            returnStatus.response = OrderCount;
+            returnStatus.status = "Total Order Count";
+            return Ok(returnStatus);
+           
+            _logger.LogInformation("Exit : OrderCOunt");
+           
+        }
+        #endregion
+
         #region RestaurantList 
         [HttpPost]
         [Route("RestaurantList")]

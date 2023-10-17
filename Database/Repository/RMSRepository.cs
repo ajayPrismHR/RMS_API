@@ -174,6 +174,35 @@ namespace SURAKSHA_API.Database.Repository
             return  productViewAPIModel;
         }
 
+        public async Task<int> OrderCountList(UserIDModel UserId)
+        {
+            int retStatus = 0;
+            try
+            {
+                
+                string ContainerUrl = _conConfig["URL:containerURL"];
+                SqlParameter parmretStatus = new SqlParameter();
+                parmretStatus.ParameterName = "@orderCount";
+                parmretStatus.DbType = DbType.Int32;
+                parmretStatus.Size = 8;
+                parmretStatus.Direction = ParameterDirection.Output;
+                SqlParameter[] param ={
+                new SqlParameter("@Costumer_ID", UserId.UserID),parmretStatus};
+                SqlHelper.ExecuteNonQuery(conn, CommandType.StoredProcedure, "CheckForFeeOrder", param);
+                if (param[1].Value != DBNull.Value)// status
+                    retStatus = Convert.ToInt32(param[1].Value);
+                else
+                    retStatus = 0;
+                //productViewAPIModel.ForEach(x => x.Image = ContainerUrl + x.Image);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+
+            }
+            return retStatus;
+        }
+
         public async Task<int> ManageFevouriteRestaurantsList(ManageRestaurantFavouritesModel FevRes)
         {
             int retStatus = 0;
