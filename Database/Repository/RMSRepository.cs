@@ -323,7 +323,7 @@ namespace SURAKSHA_API.Database.Repository
 
 
             SqlParameter[] param ={
-                new SqlParameter("@Restro_ID", orderId),
+                new SqlParameter("@OrderID", orderId),
                 new SqlParameter("@ProductID",oDM.ProductID),
                 new SqlParameter("@OfferID",oDM.OfferID),
                 new SqlParameter("@Quantity",oDM.Quantity),

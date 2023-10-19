@@ -14,4 +14,11 @@ namespace SURAKSHA.Models.QueryModel
 
     public string status { get; set; }
   }
+
+    public class ReturnStatusModel1
+    {
+        public Int64 response { get; set; }
+
+        public string status { get; set; }
+    }
 }

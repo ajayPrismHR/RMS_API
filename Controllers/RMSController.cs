@@ -209,11 +209,24 @@ namespace SURAKSHA.Controllers
         public async Task<IActionResult> CreateOrder(OrderMasterModel model)
         {
             _logger.LogInformation("Start : CreateOrder");
+            ReturnStatusModel1 returnStatus = new ReturnStatusModel1();
             RMSController rmsController = this;
             RMSRepository rMSRepository = new RMSRepository(rmsController._loggerFactory.CreateLogger<RMSRepository>(), _configuration);
             Int64 orderId = await rMSRepository.CreateOrder(model);
             _logger.LogInformation("Exit : CreateOrder");
-            return Ok(orderId);
+            if (orderId >= 1)
+            {
+                returnStatus.response = orderId;
+                returnStatus.status = "Order Placed Successfully";
+                return Ok(returnStatus);
+            }
+            else
+            {
+                returnStatus.response = 0;
+                returnStatus.status = "Error Occured";
+                return Ok(returnStatus);
+            }
+            
 
         }
         #endregion
