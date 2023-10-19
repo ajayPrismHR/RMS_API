@@ -156,9 +156,8 @@ namespace SURAKSHA_API.Database.Repository
                 string ContainerUrl = _conConfig["URL:containerURL"];
                 SqlParameter[] param ={
                 new SqlParameter("@RegistrationID", restaurantRegistrationID.RestaurantRegistrationID),
-                new SqlParameter("@Userid", restaurantRegistrationID.UserID),
                 new SqlParameter("@Offerid", restaurantRegistrationID.OfferID)};
-                DataSet dataSet = await SqlHelper.ExecuteDatasetAsync(conn, CommandType.StoredProcedure, "Restaurent_Product_List", param);
+                DataSet dataSet = await SqlHelper.ExecuteDatasetAsync(conn, CommandType.StoredProcedure, "Restaurent_Product_List_New", param);
                 productViewAPIModel = AppSettingsHelper.ToListof<ProductViewAPIModel>(dataSet.Tables[0]);
 
                 productViewAPIModel.Where(itm => String.IsNullOrEmpty(itm.Image)).ToList().ForEach(x => x.Image = "no photo.jpg");
@@ -187,12 +186,13 @@ namespace SURAKSHA_API.Database.Repository
                 parmretStatus.Size = 8;
                 parmretStatus.Direction = ParameterDirection.Output;
                 SqlParameter[] param ={
-                new SqlParameter("@Costumer_ID", UserId.UserID),parmretStatus};
-                SqlHelper.ExecuteNonQuery(conn, CommandType.StoredProcedure, "CheckForFeeOrder", param);
-                if (param[1].Value != DBNull.Value)// status
-                    retStatus = Convert.ToInt32(param[1].Value);
-                else
-                    retStatus = 0;
+                new SqlParameter("@Costumer_ID", UserId.UserID),
+                new SqlParameter("@Restr_ID", UserId.Restaurant_ID),parmretStatus};
+                int Ocount= SqlHelper.ExecuteNonQuery(conn, CommandType.StoredProcedure, "CheckForFeeOrder", param);
+                //if (param[1].Value != DBNull.Value)// status
+                //    retStatus = Convert.ToInt32(param[1].Value);
+                //else
+                    retStatus = Ocount;
                 //productViewAPIModel.ForEach(x => x.Image = ContainerUrl + x.Image);
             }
             catch (Exception ex)
