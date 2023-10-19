@@ -288,6 +288,18 @@ namespace SURAKSHA_API.Database.Repository
                 {
                     retOrderId = Convert.ToInt64(parmretOrderId.Value);
                 }
+
+                OrderDetailsModel orderDetailsModel;
+                foreach (var item in oMM.orderDetailsModels)
+                {
+                    orderDetailsModel = new OrderDetailsModel();
+                    orderDetailsModel.ProductID = item.ProductID;
+                    orderDetailsModel.Quantity = item.Quantity;
+                    orderDetailsModel.OfferID = item.OfferID;
+                    orderDetailsModel.Price = item.Price;
+                    await CreateOrderDetails(retOrderId,orderDetailsModel);
+                }
+
             }
             catch (Exception ex)
             {
@@ -299,7 +311,7 @@ namespace SURAKSHA_API.Database.Repository
             return retOrderId;
         }
 
-        public async Task<string> CreateOrderDetails(OrderDetailsModel oDM)
+        public async Task<string> CreateOrderDetails(Int64 orderId, OrderDetailsModel oDM)
         {
             string retStatus = string.Empty;
 
@@ -311,7 +323,7 @@ namespace SURAKSHA_API.Database.Repository
 
 
             SqlParameter[] param ={
-                new SqlParameter("@Restro_ID", oDM.OrderID),
+                new SqlParameter("@Restro_ID", orderId),
                 new SqlParameter("@ProductID",oDM.ProductID),
                 new SqlParameter("@OfferID",oDM.OfferID),
                 new SqlParameter("@Quantity",oDM.Quantity),
