@@ -258,6 +258,80 @@ namespace SURAKSHA_API.Database.Repository
         //    return retStatus;
 
         //}
+        public async Task<Int64> CreateOrder(OrderMasterModel oMM)
+        {
+            Int64 retOrderId = 0;
+            SqlParameter parmretOrderId = new SqlParameter();
+            parmretOrderId.ParameterName = "@Orderid";
+            parmretOrderId.DbType = DbType.Int64;
+            parmretOrderId.Size = 8;
+            parmretOrderId.Direction = ParameterDirection.Output;
+
+            SqlParameter parmretStatus = new SqlParameter();
+            parmretStatus.ParameterName = "@Status";
+            parmretStatus.DbType = DbType.String;
+            parmretStatus.Size = 200;
+            parmretStatus.Direction = ParameterDirection.Output;
+
+
+            SqlParameter[] param ={
+                new SqlParameter("@Restro_ID", oMM.Restro_ID),
+                new SqlParameter("@Costumer_ID",oMM.Costumer_ID),
+                new SqlParameter("@Order_Date",oMM.Order_Date),
+                new SqlParameter("@QR_Details",oMM.QR_Details),
+                new SqlParameter("@Is_Finalized",oMM.Is_Finalized),parmretOrderId,parmretStatus};
+            try
+            {
+                SqlHelper.ExecuteNonQuery(conn, CommandType.StoredProcedure, "InsertOrderTransationMaster", param);
+
+                if (parmretOrderId.Value != DBNull.Value)
+                {
+                    retOrderId = Convert.ToInt64(parmretOrderId.Value);
+                }
+            }
+            catch (Exception ex)
+            {
+                retOrderId = -1;
+            }
+
+
+
+            return retOrderId;
+        }
+
+        public async Task<string> CreateOrderDetails(OrderDetailsModel oDM)
+        {
+            string retStatus = string.Empty;
+
+            SqlParameter parmretStatus = new SqlParameter();
+            parmretStatus.ParameterName = "@Status";
+            parmretStatus.DbType = DbType.String;
+            parmretStatus.Size = 200;
+            parmretStatus.Direction = ParameterDirection.Output;
+
+
+            SqlParameter[] param ={
+                new SqlParameter("@Restro_ID", oDM.OrderID),
+                new SqlParameter("@ProductID",oDM.ProductID),
+                new SqlParameter("@OfferID",oDM.OfferID),
+                new SqlParameter("@Quantity",oDM.Quantity),
+                new SqlParameter("@Price",oDM.Price),parmretStatus};
+            try
+            {
+                SqlHelper.ExecuteNonQuery(conn, CommandType.StoredProcedure, "InsertOrderDetails", param);
+
+                if (parmretStatus.Value != DBNull.Value)
+                {
+                    retStatus = Convert.ToString(parmretStatus.Value.ToString());
+                }
+                
+            }
+            catch (Exception ex)
+            {
+                return retStatus ;
+            }
+            return retStatus;
+        }
 
     }
 }
