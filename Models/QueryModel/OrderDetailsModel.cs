@@ -2,7 +2,6 @@
 {
     public class OrderDetailsModel
     {
-        public string OrderID {  get; set; } 
         public string ProductID { get; set; }
         public string OfferID { get; set; }
         public int Quantity { get; set; }

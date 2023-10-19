@@ -7,5 +7,7 @@
         public DateTime Order_Date { get; set; }
         public string QR_Details { get; set; }
         public bool Is_Finalized { get; set; }
+
+        public List<OrderDetailsModel> orderDetailsModels { get; set; }
     }
 }

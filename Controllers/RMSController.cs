@@ -218,21 +218,7 @@ namespace SURAKSHA.Controllers
         }
         #endregion
 
-        #region CreateOrder 
-        [HttpPost]
-        [Route("CreateOrderDetails")]
-
-        public async Task<IActionResult> CreateOrderDetails(OrderDetailsModel model)
-        {
-            _logger.LogInformation("Start : CreateOrderDetails");
-            RMSController rmsController = this;
-            RMSRepository rMSRepository = new RMSRepository(rmsController._loggerFactory.CreateLogger<RMSRepository>(), _configuration);
-            string  status = await rMSRepository.CreateOrderDetails(model);
-            _logger.LogInformation("Exit : CreateOrderDetails");
-            return Ok(status);
-
-        }
-        #endregion
+      
     }
 
 }
