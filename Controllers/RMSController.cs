@@ -54,6 +54,74 @@ namespace SURAKSHA.Controllers
         }
         #endregion
 
+        #region SearchProductList 
+        [HttpPost]
+        [Route("SearchProductList")]
+
+        public async Task<IActionResult> SearchProductList(SearchRestaurantIDModel restaurantRegistrationID)
+        {
+            _logger.LogInformation("Start : ProductList");
+            RMSController rmsController = this;
+            RMSRepository rMSRepository = new RMSRepository(rmsController._loggerFactory.CreateLogger<RMSRepository>(), _configuration);
+            List<ProductViewAPIModel> productViewAPIModels = await rMSRepository.GetProductListSearch(restaurantRegistrationID);
+
+            _logger.LogInformation("Exit : ProductList");
+            return Ok(productViewAPIModels);
+
+        }
+        #endregion
+
+        #region FrequentlyOrderedProductOrder 
+        [HttpPost]
+        [Route("FrequentlyOrderedProductOrder")]
+
+        public async Task<IActionResult> FrequentlyOrderedProductOrder(UserIDModel UserId)
+        {
+            _logger.LogInformation("Start : ProductList");
+            RMSController rmsController = this;
+            RMSRepository rMSRepository = new RMSRepository(rmsController._loggerFactory.CreateLogger<RMSRepository>(), _configuration);
+            List<FrequentlyProductViewAPIModel> productViewAPIModels = await rMSRepository.FrequentlyOrderedProductOrderSearch(UserId);
+
+            _logger.LogInformation("Exit : ProductList");
+            return Ok(productViewAPIModels);
+
+        }
+        #endregion
+
+        #region OrderMasterList 
+        [HttpPost]
+        [Route("OrderMasterList")]
+
+        public async Task<IActionResult> OrderMastertList(UserIDModel UserId)
+        {
+            _logger.LogInformation("Start : OrderMasterList");
+            RMSController rmsController = this;
+            RMSRepository rMSRepository = new RMSRepository(rmsController._loggerFactory.CreateLogger<RMSRepository>(), _configuration);
+            List<OrderListViewAPIModel> orderListViewAPIModel = await rMSRepository.GetOrderMastertList(UserId);
+
+            _logger.LogInformation("Exit : OrderMasterList");
+            return Ok(orderListViewAPIModel);
+
+        }
+        #endregion
+
+        #region OrderDetailList 
+        [HttpPost]
+        [Route("OrderDetailList")]
+
+        public async Task<IActionResult> OrderDetailList(OrderIDModel OrderId)
+        {
+            _logger.LogInformation("Start : OrderMastertList");
+            RMSController rmsController = this;
+            RMSRepository rMSRepository = new RMSRepository(rmsController._loggerFactory.CreateLogger<RMSRepository>(), _configuration);
+            List<OrderDetailViewAPIModel> orderListViewAPIModel = await rMSRepository.GetOrderDetailList(OrderId);
+
+            _logger.LogInformation("Exit : OrderMastertList");
+            return Ok(orderListViewAPIModel);
+
+        }
+        #endregion
+
         #region OrderCOunt 
         [HttpPost]
         [Route("OrderCOunt")]

@@ -12,6 +12,7 @@
          public double Lat { get; set; } 
          public double Long { get; set; }
         public double Distance { get; set; } 
+        public string Favourite { get; set; }
 
     }
 }

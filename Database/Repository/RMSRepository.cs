@@ -173,6 +173,101 @@ namespace SURAKSHA_API.Database.Repository
             return  productViewAPIModel;
         }
 
+        public async Task<List<ProductViewAPIModel>> GetProductListSearch(SearchRestaurantIDModel restaurantRegistrationID)
+        {
+            List<ProductViewAPIModel> productViewAPIModel = new List<ProductViewAPIModel>();
+            try
+            {
+                string ContainerUrl = _conConfig["URL:containerURL"];
+                SqlParameter[] param ={
+                new SqlParameter("@RegistrationID", restaurantRegistrationID.RestaurantRegistrationID),
+                new SqlParameter("@Name", restaurantRegistrationID.Name)};
+                DataSet dataSet = await SqlHelper.ExecuteDatasetAsync(conn, CommandType.StoredProcedure, "Search_Restaurent_Product_List", param);
+                productViewAPIModel = AppSettingsHelper.ToListof<ProductViewAPIModel>(dataSet.Tables[0]);
+
+                productViewAPIModel.Where(itm => String.IsNullOrEmpty(itm.Image)).ToList().ForEach(x => x.Image = "no photo.jpg");
+                productViewAPIModel.Where(itm => !String.IsNullOrEmpty(itm.Image)).ToList().ForEach(x => x.Image = ContainerUrl + x.Image);
+
+                //productViewAPIModel.ForEach(x => x.Image = ContainerUrl + x.Image);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+
+            }
+            return productViewAPIModel;
+        }
+
+        public async Task<List<FrequentlyProductViewAPIModel>> FrequentlyOrderedProductOrderSearch(UserIDModel UserId)
+        {
+            List<FrequentlyProductViewAPIModel> productViewAPIModel = new List<FrequentlyProductViewAPIModel>();
+            try
+            {
+                string ContainerUrl = _conConfig["URL:containerURL"];
+
+                SqlParameter[] param ={
+                new SqlParameter("@USERID", UserId.UserID)};
+                DataSet dataSet = await SqlHelper.ExecuteDatasetAsync(conn, CommandType.StoredProcedure, "Top_10_FrequentlyOrderedITMES", param);
+                productViewAPIModel = AppSettingsHelper.ToListof<FrequentlyProductViewAPIModel>(dataSet.Tables[0]);
+
+                productViewAPIModel.Where(itm => String.IsNullOrEmpty(itm.Image)).ToList().ForEach(x => x.Image = "no photo.jpg");
+                productViewAPIModel.Where(itm => !String.IsNullOrEmpty(itm.Image)).ToList().ForEach(x => x.Image = ContainerUrl + x.Image);
+
+                //productViewAPIModel.ForEach(x => x.Image = ContainerUrl + x.Image);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+
+            }
+            return productViewAPIModel;
+        }
+
+
+        public async Task<List<OrderListViewAPIModel>> GetOrderMastertList(UserIDModel UserId)
+        {
+            List<OrderListViewAPIModel> orderListViewAPIModel = new List<OrderListViewAPIModel>();
+            try
+            {
+                string ContainerUrl = _conConfig["URL:containerURL"];
+                SqlParameter[] param ={
+                new SqlParameter("@userID", UserId.UserID)};
+                DataSet dataSet = await SqlHelper.ExecuteDatasetAsync(conn, CommandType.StoredProcedure, "OrderMaster", param);
+                orderListViewAPIModel = AppSettingsHelper.ToListof<OrderListViewAPIModel>(dataSet.Tables[0]);
+                orderListViewAPIModel.Where(itm => String.IsNullOrEmpty(itm.Image)).ToList().ForEach(x => x.Image = "no photo.jpg");
+                orderListViewAPIModel.Where(itm => !String.IsNullOrEmpty(itm.Image)).ToList().ForEach(x => x.Image = ContainerUrl + x.Image);
+                //productViewAPIModel.ForEach(x => x.Image = ContainerUrl + x.Image);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+
+            }
+            return orderListViewAPIModel;
+        }
+
+
+        public async Task<List<OrderDetailViewAPIModel>> GetOrderDetailList(OrderIDModel OrderId)
+        {
+            List<OrderDetailViewAPIModel> orderListViewAPIModel = new List<OrderDetailViewAPIModel>();
+            try
+            {
+                string ContainerUrl = _conConfig["URL:containerURL"];
+                SqlParameter[] param ={
+                new SqlParameter("@OrderID", OrderId.OrderID)};
+                DataSet dataSet = await SqlHelper.ExecuteDatasetAsync(conn, CommandType.StoredProcedure, "OrderDetail", param);
+                orderListViewAPIModel = AppSettingsHelper.ToListof<OrderDetailViewAPIModel>(dataSet.Tables[0]);
+
+                //productViewAPIModel.ForEach(x => x.Image = ContainerUrl + x.Image);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+
+            }
+            return orderListViewAPIModel;
+        }
+
         public async Task<int> OrderCountList(UserIDModel UserId)
         {
             int retStatus = 0;
