@@ -7,8 +7,8 @@
         public string MobileNo { get; set; } = string.Empty;
         public string MailID { get; set; } = string.Empty;
         public string Address { get; set; } = string.Empty;
-        public string Lat { get; set; } = string.Empty;
-        public string Long { get; set; } = string.Empty;
+        public double Lat { get; set; }
+        public double Long { get; set; }
         public string Image { get; set; } = string.Empty;
         public string AccessToken { get; set; } = string.Empty;
     }
