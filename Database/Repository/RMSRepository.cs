@@ -173,6 +173,28 @@ namespace SURAKSHA_API.Database.Repository
             return  productViewAPIModel;
         }
 
+        public async Task<List<AllProductViewAPIModel>> GetAllProductList()
+        {
+            List<AllProductViewAPIModel> productViewAPIModel = new List<AllProductViewAPIModel>();
+            try
+            {
+                string ContainerUrl = _conConfig["URL:containerURL"];
+                DataSet dataSet = await SqlHelper.ExecuteDatasetAsync(conn, CommandType.StoredProcedure, "All_Product_List");
+                productViewAPIModel = AppSettingsHelper.ToListof<AllProductViewAPIModel>(dataSet.Tables[0]);
+
+                productViewAPIModel.Where(itm => String.IsNullOrEmpty(itm.Image)).ToList().ForEach(x => x.Image = "no photo.jpg");
+                productViewAPIModel.Where(itm => !String.IsNullOrEmpty(itm.Image)).ToList().ForEach(x => x.Image = ContainerUrl + x.Image);
+
+                //productViewAPIModel.ForEach(x => x.Image = ContainerUrl + x.Image);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+
+            }
+            return productViewAPIModel;
+        }
+
         public async Task<List<ProductViewAPIModel>> GetProductListSearch(SearchRestaurantIDModel restaurantRegistrationID)
         {
             List<ProductViewAPIModel> productViewAPIModel = new List<ProductViewAPIModel>();
@@ -268,6 +290,29 @@ namespace SURAKSHA_API.Database.Repository
             return orderListViewAPIModel;
         }
 
+        public async Task<List<OrderDetailViewAPIModel>> GetOrderDetaitoRestaurantlList(OrderIDForRestaurantModel OrderId)
+        {
+            List<OrderDetailViewAPIModel> orderListViewAPIModel = new List<OrderDetailViewAPIModel>();
+            try
+            {
+                string ContainerUrl = _conConfig["URL:containerURL"];
+                SqlParameter[] param ={
+                new SqlParameter("@OrderID", OrderId.OrderID),
+                new SqlParameter("@RestaurantID", OrderId.RestaurantID),
+                new SqlParameter("@UserID", OrderId.UserID)};
+                DataSet dataSet = await SqlHelper.ExecuteDatasetAsync(conn, CommandType.StoredProcedure, "GetOrderDetail", param);
+                orderListViewAPIModel = AppSettingsHelper.ToListof<OrderDetailViewAPIModel>(dataSet.Tables[0]);
+
+                //productViewAPIModel.ForEach(x => x.Image = ContainerUrl + x.Image);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+
+            }
+            return orderListViewAPIModel;
+        }
+
         public async Task<int> OrderCountList(UserIDModel UserId)
         {
             int retStatus = 0;
@@ -329,6 +374,40 @@ namespace SURAKSHA_API.Database.Repository
 
             return retStatus;
         }
+
+        public async Task<int> UpdateOrderStatusList(OrderStatusUpdateModel OrderStatus)
+        {
+            int retStatus = 0;
+            SqlParameter sqlParameter = new SqlParameter();
+            SqlParameter parmretStatus = new SqlParameter();
+            parmretStatus.ParameterName = "@Ret_status";
+            parmretStatus.DbType = DbType.Int32;
+            parmretStatus.Size = 8;
+            parmretStatus.Direction = ParameterDirection.Output;
+            SqlParameter[] param ={
+                new SqlParameter("@OrderID",OrderStatus.OrderID),
+                new SqlParameter("@Status",OrderStatus.Status),
+                    parmretStatus};
+            try
+            {
+                SqlHelper.ExecuteNonQuery(conn, CommandType.StoredProcedure, "UpdateOrderStatus", param);
+
+                if (param[2].Value != DBNull.Value)// status
+                    retStatus = Convert.ToInt32(param[2].Value);
+                else
+                    retStatus = 0;
+            }
+            catch (Exception ex)
+            {
+                retStatus = -1;
+            }
+
+
+
+            return retStatus;
+        }
+
+
 
         //public async Task<int> CheckMobileNoAPI(MobileNoCheck mobileno)
         //{

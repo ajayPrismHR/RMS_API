@@ -207,6 +207,48 @@ namespace SURAKSHA.Controllers
         }
         #endregion
 
+        #region AddProduct 
+        [HttpPost]
+        [Route("AddProduct")]
+
+        public async Task<IActionResult> AddProduct([FromForm] MasterAddProductModel product)
+        {
+            _logger.LogInformation("Start : AddProduct");
+            LoginController loginController = this;
+            var json = product.Productinfo;
+
+            var userObj = JsonSerializer.Deserialize<AddProductModel>(json, new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            });
+            ModelFile file = new ModelFile();
+            if (userObj.PID == 0)
+            {
+                
+                file.ImageFile = product.ImageFile;
+                string filename = file.ImageFile.FileName;
+                FileInfo fi = new FileInfo(filename);
+                string fileNametoSave = userObj.ProductName + "_" + Guid.NewGuid() + fi.Extension;
+                userObj.Image = fileNametoSave;
+            }
+            else
+            {
+                userObj.Image = "";
+            }
+            LoginRepository loginRepository = new LoginRepository(loginController._loggerFactory.CreateLogger<LoginRepository>());
+            RMS_API.Models.Response response = await loginRepository.AddProductAPI(userObj);
+            if (response.Status > 0 && userObj.PID == 0)
+            {
+                await _fileService.Upload(
+                                            file, fileNametoSave
+                                         );
+            }
+            _logger.LogInformation("Exit : AddProduct");
+            return Ok(response);
+
+        }
+        #endregion
+
         [HttpPost]
         [Route("ChangePassword")]
         public async Task<IActionResult> ChangePassword(UserRequestQueryModel User)

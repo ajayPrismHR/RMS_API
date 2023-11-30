@@ -229,6 +229,48 @@ namespace SURAKSHA.Database.Repository
             return Task.FromResult<RMS_API.Models.Response>(response);
         }
 
+
+        public Task<RMS_API.Models.Response> AddProductAPI(AddProductModel Product)
+        {
+            RMS_API.Models.Response response;
+
+            SqlParameter outRetStatus = new SqlParameter();
+            outRetStatus.ParameterName = "@Ret_Status";
+            outRetStatus.DbType = DbType.Int32;
+            outRetStatus.Size = 8;
+            outRetStatus.Direction = ParameterDirection.Output;
+
+
+            SqlParameter[] param ={
+             new SqlParameter("@PID",Product.PID),
+                new SqlParameter("@Pname",Product.ProductName),
+                new SqlParameter("@isVeg",Product.isVeg),
+                new SqlParameter("@IsAlcoholic",Product.IsAlcoholic),
+                new SqlParameter("@Image",Product.Image),
+                new SqlParameter("@RestaurantRegID",Product.RestaurantRegID),
+                new SqlParameter("@PRate",Product.PRate),
+                new SqlParameter("@offerID",Product.offerID),
+                    outRetStatus};
+
+
+            try
+            {
+                SqlHelper.ExecuteNonQuery(conn, CommandType.StoredProcedure, "AddProduct", param);
+                response = new RMS_API.Models.Response();
+                if (param[8].Value != DBNull.Value)// status
+                    response.Status = Convert.ToInt16(param[8].Value);
+                    response.message = "Product Added Successfully";
+
+            }
+            catch (Exception ex)
+            {
+                response = new RMS_API.Models.Response();
+                response.Status = 0;
+                response.message = "Internal Server Error";
+            }
+            return Task.FromResult<RMS_API.Models.Response>(response);
+        }
+
         public async Task<int> CheckMobileNoAPI(MobileNoCheck mobileno)
         {
             List<RestaurantViewAPIModel> restaurantViewAPIModels = new List<RestaurantViewAPIModel>();

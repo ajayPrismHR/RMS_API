@@ -54,6 +54,23 @@ namespace SURAKSHA.Controllers
         }
         #endregion
 
+        #region AllProductList 
+        [HttpPost]
+        [Route("AllProductList")]
+
+        public async Task<IActionResult> AllProductList()
+        {
+            _logger.LogInformation("Start : ProductList");
+            RMSController rmsController = this;
+            RMSRepository rMSRepository = new RMSRepository(rmsController._loggerFactory.CreateLogger<RMSRepository>(), _configuration);
+            List<AllProductViewAPIModel> productViewAPIModels = await rMSRepository.GetAllProductList();
+
+            _logger.LogInformation("Exit : ProductList");
+            return Ok(productViewAPIModels);
+
+        }
+        #endregion
+
         #region SearchProductList 
         [HttpPost]
         [Route("SearchProductList")]
@@ -115,6 +132,23 @@ namespace SURAKSHA.Controllers
             RMSController rmsController = this;
             RMSRepository rMSRepository = new RMSRepository(rmsController._loggerFactory.CreateLogger<RMSRepository>(), _configuration);
             List<OrderDetailViewAPIModel> orderListViewAPIModel = await rMSRepository.GetOrderDetailList(OrderId);
+
+            _logger.LogInformation("Exit : OrderMastertList");
+            return Ok(orderListViewAPIModel);
+
+        }
+        #endregion
+
+        #region OrderDetailForRestaurantList 
+        [HttpPost]
+        [Route("OrderDetailForRestaurantList")]
+
+        public async Task<IActionResult> OrderDetailForRestaurantList(OrderIDForRestaurantModel OrderId)
+        {
+            _logger.LogInformation("Start : OrderMastertList");
+            RMSController rmsController = this;
+            RMSRepository rMSRepository = new RMSRepository(rmsController._loggerFactory.CreateLogger<RMSRepository>(), _configuration);
+            List<OrderDetailViewAPIModel> orderListViewAPIModel = await rMSRepository.GetOrderDetaitoRestaurantlList(OrderId);
 
             _logger.LogInformation("Exit : OrderMastertList");
             return Ok(orderListViewAPIModel);
@@ -268,6 +302,41 @@ namespace SURAKSHA.Controllers
             }
 
         }
+
+        [HttpPost]
+        [Route("UpdateOrderStatus")]
+        public async Task<IActionResult> UpdateOrderStatus(OrderStatusUpdateModel OrderStatus)
+        {
+            int retStatus = 0;
+            RMSController rmsController = this;
+            RMSRepository rMSRepository = new RMSRepository(rmsController._loggerFactory.CreateLogger<RMSRepository>(), _configuration);
+            ReturnStatusModel returnStatus = new ReturnStatusModel();
+            UserViewAPIModel userViewApiModel = new UserViewAPIModel();
+            retStatus = await rMSRepository.UpdateOrderStatusList(OrderStatus);
+            if (retStatus == 1)
+            {
+                if(OrderStatus.Status==1)
+                {
+                    returnStatus.response = 1;
+                    returnStatus.status = "Order Finalized Successfully";
+                }
+                else
+                {
+                    returnStatus.response = 1;
+                    returnStatus.status = "Order Rejected Successfully";
+                }
+                
+                return Ok(returnStatus);
+            }
+            else
+            {
+                returnStatus.response = 0;
+                returnStatus.status = "Error Occured";
+                return Ok(returnStatus);
+            }
+
+        }
+
 
 
         #region CreateOrder 

@@ -12,10 +12,21 @@
         public decimal PRate { get; set; } 
     }
 
+    public class AllProductViewAPIModel
+    {
+        public Int64 PID { get; set; }
+        public string PName { get; set; } = string.Empty;
+        public int Is_Veg { get; set; }
+        public int Is_Alcoholic { get; set; }
+        public string Image { get; set; } = string.Empty;
+        public string CategoryName { get; set; } = string.Empty;
+    }
+
     public class OrderListViewAPIModel
     {
         public Int64 Order_ID { get; set; }
         public string RestaurentName { get; set; } = string.Empty;
+        public string RegistrationID { get; set; } = string.Empty;
         public DateTime Order_Date { get; set; }
         public string OrderStatus { get; set; }
 
@@ -29,6 +40,12 @@
         public DateTime Order_Date { get; set; }
         public int Quantity { get; set; }
         public Decimal Price { get; set; }
+    }
+
+    public class OrderStatusUpdateModel
+    {
+        public Int64 OrderID { get; set; }
+        public int Status { get; set; }
     }
 
     public class FrequentlyProductViewAPIModel
