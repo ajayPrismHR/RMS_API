@@ -41,7 +41,7 @@ public class UserRegistration
         public string Long { get; set; }
 
         public string Gender { get; set; }
-        public DateTime DOB { get; set; }
+        public string DOB { get; set; }
     }
 
 }
