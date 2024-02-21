@@ -31,6 +31,7 @@
         public string OrderStatus { get; set; }
 
         public string Image { get; set; }
+        public string order_amount { get; set; }
     }
 
     public class OrderDetailViewAPIModel

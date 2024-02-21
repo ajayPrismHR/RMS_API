@@ -12,6 +12,7 @@ namespace SURAKSHA.Models.ViewModel
 {
   public class UserViewModel
   {
+        public Int64 ID { get; set; }
         public string RegistrationID { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
