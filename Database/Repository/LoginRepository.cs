@@ -17,6 +17,8 @@ using System.Runtime.InteropServices;
 using System;
 using RMS_API.Models.ViewModel;
 using RMS_API.Models.QueryModel;
+using System.Configuration;
+using SURAKSHA_API.Database.Repository;
 
 namespace SURAKSHA.Database.Repository
 {
@@ -24,10 +26,16 @@ namespace SURAKSHA.Database.Repository
     {
    
         private readonly ILogger<LoginRepository> _logger;
-
+        private IConfiguration _conConfig;
         public LoginRepository(ILogger<LoginRepository> logger)
         {
             _logger = logger;
+        }
+
+        public LoginRepository(ILogger<LoginRepository> logger, IConfiguration configuration)
+        {
+            _logger = logger;
+            _conConfig = configuration;
         }
 
         private string conn=AppSettingsHelper.Setting(Key: "ConnectionStrings:DevConn");
@@ -52,7 +60,27 @@ namespace SURAKSHA.Database.Repository
             }
             return userViewModelReturn;
         }
+        public async Task<List<LoginListModel>> GetLoginImagesList()
+        {
+            List<LoginListModel> LoginImageViewAPIModels = new List<LoginListModel>();
+            try
+            {
+                string ContainerUrl = _conConfig["URL:containerURL"];
+                DataSet dataSet = await SqlHelper.ExecuteDatasetAsync(conn, CommandType.StoredProcedure, "GetLoginImages");
+                LoginImageViewAPIModels = AppSettingsHelper.ToListof<LoginListModel>(dataSet.Tables[0]);
 
+                LoginImageViewAPIModels.Where(itm => String.IsNullOrEmpty(itm.Image)).ToList().ForEach(x => x.Image = "no photo.jpg");
+                LoginImageViewAPIModels.Where(itm => !String.IsNullOrEmpty(itm.Image)).ToList().ForEach(x => x.Image = ContainerUrl + x.Image);
+
+                //productViewAPIModel.ForEach(x => x.Image = ContainerUrl + x.Image);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+
+            }
+            return LoginImageViewAPIModels;
+        }
         public RestaurantViewModel ValidateRestaurant(UserRequestQueryModel user)
         {
             List<RestaurantViewModel> userViewModel = new List<RestaurantViewModel>();

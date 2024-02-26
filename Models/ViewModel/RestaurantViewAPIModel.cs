@@ -13,6 +13,8 @@
          public double Long { get; set; }
         public double Distance { get; set; } 
         public string Favourite { get; set; }
+        public Int64 OfferID { get; set; }
+        public string OfferName { get; set; }
 
     }
 }

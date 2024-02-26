@@ -54,6 +54,8 @@ namespace SURAKSHA.Controllers
         }
         #endregion
 
+        
+
         #region AllProductList 
         [HttpPost]
         [Route("AllProductList")]
@@ -169,10 +171,59 @@ namespace SURAKSHA.Controllers
             int OrderCount = await rMSRepository.OrderCountList(UserId);
             returnStatus.response = OrderCount;
             returnStatus.status = "Total Order Count";
+
+            _logger.LogInformation("Exit : OrderCOunt");
             return Ok(returnStatus);
            
-            _logger.LogInformation("Exit : OrderCOunt");
            
+        }
+        #endregion
+
+        #region SubmitRatings 
+        [HttpPost]
+        [Route("SubmitRatings")]
+
+        public async Task<IActionResult> SubmitRatings(RatingsModel Ratings)
+        {
+            _logger.LogInformation("Start : SubmitRatings");
+            RMSController rmsController = this;
+            ReturnStatusModel returnStatus = new ReturnStatusModel();
+            RMSRepository rMSRepository = new RMSRepository(rmsController._loggerFactory.CreateLogger<RMSRepository>(), _configuration);
+            int OrderCount = await rMSRepository.SubmitRestaurantRatings(Ratings);
+            if (OrderCount == 1)
+            {
+                returnStatus.response = OrderCount;
+                returnStatus.status = "Rating Submitted";
+             }
+            else
+            {
+                returnStatus.response = OrderCount;
+                returnStatus.status = "Error Occured";
+            }
+
+            _logger.LogInformation("Exit : SubmitRatings");
+            return Ok(returnStatus);
+
+
+        }
+        #endregion
+
+        #region GetRestaurantRatings 
+        [HttpPost]
+        [Route("GetRestaurantRatings")]
+
+        public async Task<IActionResult> GetRestaurantRatings()
+        {
+            _logger.LogInformation("Start : GetRestaurantRatings");
+            RMSController rmsController = this;
+            ReturnStatusModel returnStatus = new ReturnStatusModel();
+            RMSRepository rMSRepository = new RMSRepository(rmsController._loggerFactory.CreateLogger<RMSRepository>(), _configuration);
+            List<GetRatingsModel> RatingListViewAPIModel = await rMSRepository.GetRestaurantRatingsList();
+            
+            _logger.LogInformation("Exit : GetRestaurantRatings");
+            return Ok(RatingListViewAPIModel);
+
+
         }
         #endregion
 

@@ -155,8 +155,7 @@ namespace SURAKSHA_API.Database.Repository
             {
                 string ContainerUrl = _conConfig["URL:containerURL"];
                 SqlParameter[] param ={
-                new SqlParameter("@RegistrationID", restaurantRegistrationID.RestaurantRegistrationID),
-                new SqlParameter("@Offerid", restaurantRegistrationID.OfferID)};
+                new SqlParameter("@RegistrationID", restaurantRegistrationID.RestaurantRegistrationID)};
                 DataSet dataSet = await SqlHelper.ExecuteDatasetAsync(conn, CommandType.StoredProcedure, "Restaurent_Product_List_New", param);
                 productViewAPIModel = AppSettingsHelper.ToListof<ProductViewAPIModel>(dataSet.Tables[0]);
 
@@ -172,6 +171,8 @@ namespace SURAKSHA_API.Database.Repository
             }
             return  productViewAPIModel;
         }
+
+        
 
         public async Task<List<AllProductViewAPIModel>> GetAllProductList()
         {
@@ -341,6 +342,59 @@ namespace SURAKSHA_API.Database.Repository
 
             }
             return retStatus;
+        }
+
+
+        public async Task<int> SubmitRestaurantRatings(RatingsModel Ratings)
+        {
+            int retStatus = 0;
+            try
+            {
+
+                string ContainerUrl = _conConfig["URL:containerURL"];
+                SqlParameter parmretStatus = new SqlParameter();
+                parmretStatus.ParameterName = "@RetStatus";
+                parmretStatus.DbType = DbType.Int32;
+                parmretStatus.Size = 8;
+                parmretStatus.Direction = ParameterDirection.Output;
+                SqlParameter[] param ={
+                new SqlParameter("@UserID", Ratings.UserID),
+                new SqlParameter("@RestroID", Ratings.RestroID),
+                new SqlParameter("@Ratings", Ratings.Ratings),
+                new SqlParameter("@Review", Ratings.Review),parmretStatus};
+                int Ocount = SqlHelper.ExecuteNonQuery(conn, CommandType.StoredProcedure, "SubmitRatings", param);
+                if (param[4].Value != DBNull.Value)// status
+                    retStatus = Convert.ToInt32(param[4].Value);
+                else
+                    retStatus = 0;
+                //productViewAPIModel.ForEach(x => x.Image = ContainerUrl + x.Image);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+
+            }
+            return retStatus;
+        }
+
+        public async Task<List<GetRatingsModel>> GetRestaurantRatingsList()
+        {
+            List<GetRatingsModel> RatingListViewAPIModel = new List<GetRatingsModel>();
+            try
+            {
+                string ContainerUrl = _conConfig["URL:containerURL"];
+               
+                DataSet dataSet = await SqlHelper.ExecuteDatasetAsync(conn, CommandType.StoredProcedure, "GetRestroRatings");
+                RatingListViewAPIModel = AppSettingsHelper.ToListof<GetRatingsModel>(dataSet.Tables[0]);
+
+                //productViewAPIModel.ForEach(x => x.Image = ContainerUrl + x.Image);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+
+            }
+            return RatingListViewAPIModel;
         }
 
         public async Task<int> ManageFevouriteRestaurantsList(ManageRestaurantFavouritesModel FevRes)

@@ -16,6 +16,7 @@ using System.Text.Json;
 
 using RMS_API.Models.ViewModel;
 using System.Security.AccessControl;
+using SURAKSHA_API.Database.Repository;
 
 namespace SURAKSHA.Controllers
 {
@@ -126,6 +127,24 @@ namespace SURAKSHA.Controllers
 
                 return NotFound(-1);
             }
+        }
+        #endregion
+
+        #region GetLoginImages 
+        [HttpPost]
+        [Route("GetLoginImages")]
+
+        public async Task<IActionResult> GetLoginImages()
+        {
+            _logger.LogInformation("Start : GetLoginImages");
+            LoginController loginController = this;
+            ILogger<LoginRepository> modelLogger = _loggerFactory.CreateLogger<LoginRepository>();
+            LoginRepository loginRepository = new LoginRepository(loginController._loggerFactory.CreateLogger<LoginRepository>(), _configuration);
+            List<LoginListModel> LoginImageViewAPIModels = await loginRepository.GetLoginImagesList();
+
+            _logger.LogInformation("Exit : GetLoginImages");
+            return Ok(LoginImageViewAPIModels);
+
         }
         #endregion
 
