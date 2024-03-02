@@ -227,6 +227,25 @@ namespace SURAKSHA.Controllers
         }
         #endregion
 
+        #region GetOrderWiseRestaurantRatings 
+        [HttpPost]
+        [Route("GetOrderWiseRestaurantRatings")]
+
+        public async Task<IActionResult> GetOrderWiseRestaurantRatings(OrderWiseRatingsModel RR)
+        {
+            _logger.LogInformation("Start : GetRestaurantRatings");
+            RMSController rmsController = this;
+            ReturnStatusModel returnStatus = new ReturnStatusModel();
+            RMSRepository rMSRepository = new RMSRepository(rmsController._loggerFactory.CreateLogger<RMSRepository>(), _configuration);
+            List<GetOrderWiseRatingsModel> RatingListViewAPIModel = await rMSRepository.GetOrderWiseRestaurantRatingsList(RR);
+
+            _logger.LogInformation("Exit : GetOrderWiseRestaurantRatings");
+            return Ok(RatingListViewAPIModel);
+
+
+        }
+        #endregion
+
         #region RestaurantList 
         [HttpPost]
         [Route("RestaurantList")]

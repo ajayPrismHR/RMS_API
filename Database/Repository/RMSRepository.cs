@@ -360,6 +360,7 @@ namespace SURAKSHA_API.Database.Repository
                 SqlParameter[] param ={
                 new SqlParameter("@UserID", Ratings.UserID),
                 new SqlParameter("@RestroID", Ratings.RestroID),
+                new SqlParameter("@OrderID", Ratings.OrderID),
                 new SqlParameter("@Ratings", Ratings.Ratings),
                 new SqlParameter("@Review", Ratings.Review),parmretStatus};
                 int Ocount = SqlHelper.ExecuteNonQuery(conn, CommandType.StoredProcedure, "SubmitRatings", param);
@@ -386,6 +387,28 @@ namespace SURAKSHA_API.Database.Repository
                
                 DataSet dataSet = await SqlHelper.ExecuteDatasetAsync(conn, CommandType.StoredProcedure, "GetRestroRatings");
                 RatingListViewAPIModel = AppSettingsHelper.ToListof<GetRatingsModel>(dataSet.Tables[0]);
+
+                //productViewAPIModel.ForEach(x => x.Image = ContainerUrl + x.Image);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+
+            }
+            return RatingListViewAPIModel;
+        }
+
+        public async Task<List<GetOrderWiseRatingsModel>> GetOrderWiseRestaurantRatingsList(OrderWiseRatingsModel RR)
+        {
+            List<GetOrderWiseRatingsModel> RatingListViewAPIModel = new List<GetOrderWiseRatingsModel>();
+            try
+            {
+                string ContainerUrl = _conConfig["URL:containerURL"];
+                SqlParameter[] param ={
+                new SqlParameter("@UserID", RR.UserID),
+                new SqlParameter("@orderID", RR.OrderID) };
+                DataSet dataSet = await SqlHelper.ExecuteDatasetAsync(conn, CommandType.StoredProcedure, "GetOrderWiseRestroRatings",param);
+                RatingListViewAPIModel = AppSettingsHelper.ToListof<GetOrderWiseRatingsModel>(dataSet.Tables[0]);
 
                 //productViewAPIModel.ForEach(x => x.Image = ContainerUrl + x.Image);
             }
